@@ -187,3 +187,6 @@ browser-worker
 .dev.vars
 
 apps/scrapers/feeds.json
+
+# Node compile cache
+node-compile-cache/
