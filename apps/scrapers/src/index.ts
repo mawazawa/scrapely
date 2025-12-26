@@ -11,8 +11,21 @@ export type Env = {
 
   DATABASE_URL: string;
 
+  // Google Gemini 3 (primary)
   GOOGLE_API_KEY: string;
   GOOGLE_BASE_URL: string;
+
+  // OpenAI GPT-5.2 (briefs synthesis)
+  OPENAI_API_KEY?: string;
+
+  // Anthropic Claude 4.5 (fallback)
+  ANTHROPIC_API_KEY?: string;
+
+  // Mistral OCR 3 (document processing)
+  MISTRAL_API_KEY?: string;
+
+  // Firecrawl (AI scraping)
+  FIRECRAWL_API_KEY?: string;
 
   MERIDIAN_SECRET_KEY: string;
 };

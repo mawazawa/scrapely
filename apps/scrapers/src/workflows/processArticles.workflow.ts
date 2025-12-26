@@ -9,6 +9,11 @@ import { WorkflowEntrypoint, WorkflowStep, WorkflowEvent, WorkflowStepConfig } f
 import { err, ok } from 'neverthrow';
 import { ResultAsync } from 'neverthrow';
 import { DomainRateLimiter } from '../lib/rateLimiter';
+import { shouldUseFirecrawl, smartFirecrawlScrape } from '../lib/firecrawl';
+import { isPdfUrl, processDocument } from '../lib/documentOcr';
+import { MODELS } from '../lib/models';
+
+type Params = Record<string, unknown>;
 
 const dbStepConfig: WorkflowStepConfig = {
   retries: { limit: 3, delay: '1 second', backoff: 'linear' },
@@ -20,7 +25,10 @@ export class ProcessArticles extends WorkflowEntrypoint<Env, Params> {
   async run(_event: WorkflowEvent<Params>, step: WorkflowStep) {
     const env = this.env;
     const db = getDb(env);
+
+    // Use Gemini 3 Flash for article analysis (Dec 2025)
     const google = createGoogleGenerativeAI({ apiKey: env.GOOGLE_API_KEY, baseURL: env.GOOGLE_BASE_URL });
+    const analysisModel = MODELS.analysis;
 
     async function getUnprocessedArticles(opts: { limit?: number }) {
       const articles = await db
@@ -66,52 +74,73 @@ export class ProcessArticles extends WorkflowEntrypoint<Env, Params> {
       title: string;
       text: string;
       publishedTime?: string;
+      source: 'fetch' | 'browser' | 'firecrawl' | 'ocr';
     }> = [];
-
-    const trickyDomains = ['reuters.com', 'nytimes.com'];
 
     // Process articles with rate limiting
     const articleResults = await rateLimiter.processBatch(articles, step, async (article, domain) => {
-      // Skip PDF files immediately
-      if (article.url.toLowerCase().endsWith('.pdf')) {
-        return { id: article.id, success: false, error: 'pdf' };
-      }
-
       const result = await step.do(
         `scrape article ${article.id}`,
         {
           retries: { limit: 3, delay: '2 second', backoff: 'exponential' },
-          timeout: '1 minute',
+          timeout: '2 minutes',
         },
         async () => {
-          // start with light scraping
-          let articleData: { title: string; text: string; publishedTime: string | undefined } | undefined = undefined;
+          let articleData: { title: string; text: string; publishedTime?: string } | undefined = undefined;
+          let source: 'fetch' | 'browser' | 'firecrawl' | 'ocr' = 'fetch';
 
-          // if we're from a tricky domain, fetch with browser first
-          if (trickyDomains.includes(domain)) {
-            const articleResult = await getArticleWithBrowser(env, article.url);
-            if (articleResult.isErr()) {
-              return { id: article.id, success: false, error: articleResult.error.error };
+          // 1. Check if PDF - use Mistral OCR 3
+          if (isPdfUrl(article.url)) {
+            if (!env.MISTRAL_API_KEY) {
+              return { id: article.id, success: false, error: 'PDF processing requires MISTRAL_API_KEY' };
             }
-            articleData = articleResult.value;
+            const ocrResult = await processDocument(env, article.url);
+            if (ocrResult.isErr()) {
+              return { id: article.id, success: false, error: ocrResult.error.message };
+            }
+            articleData = {
+              title: ocrResult.value.title,
+              text: ocrResult.value.text,
+            };
+            source = 'ocr';
+            console.log(`[OCR] Processed PDF: ${article.url} (${ocrResult.value.pages} pages)`);
           }
 
-          // otherwise, start with fetch & then browser if that fails
-          const lightResult = await getArticleWithFetch(article.url);
-          if (lightResult.isErr()) {
-            // rand jitter between .5 & 3 seconds
+          // 2. Check if Firecrawl domain - use AI scraping
+          const firecrawlMode = shouldUseFirecrawl(article.url);
+          if (!articleData && firecrawlMode && env.FIRECRAWL_API_KEY) {
+            const fcResult = await smartFirecrawlScrape(env, article.url);
+            if (fcResult.isOk()) {
+              articleData = fcResult.value;
+              source = 'firecrawl';
+              console.log(`[Firecrawl:${firecrawlMode}] Scraped: ${article.url}`);
+            }
+            // Fall through to other methods if Firecrawl fails
+          }
+
+          // 3. Try light fetch first
+          if (!articleData) {
+            const lightResult = await getArticleWithFetch(article.url);
+            if (lightResult.isOk()) {
+              articleData = lightResult.value;
+              source = 'fetch';
+            }
+          }
+
+          // 4. Fall back to browser rendering
+          if (!articleData) {
             const jitterTime = Math.random() * 2500 + 500;
             await step.sleep(`jitter`, jitterTime);
 
-            const articleResult = await getArticleWithBrowser(env, article.url);
-            if (articleResult.isErr()) {
-              return { id: article.id, success: false, error: articleResult.error.error };
+            const browserResult = await getArticleWithBrowser(env, article.url);
+            if (browserResult.isErr()) {
+              return { id: article.id, success: false, error: browserResult.error.error };
             }
+            articleData = browserResult.value;
+            source = 'browser';
+          }
 
-            articleData = articleResult.value;
-          } else articleData = lightResult.value;
-
-          return { id: article.id, success: true, html: articleData };
+          return { id: article.id, success: true, data: articleData, source };
         }
       );
 
@@ -120,12 +149,13 @@ export class ProcessArticles extends WorkflowEntrypoint<Env, Params> {
 
     // Handle results
     for (const result of articleResults) {
-      if (result.success && 'html' in result) {
+      if (result.success && 'data' in result && result.data) {
         articlesToProcess.push({
           id: result.id,
-          title: result.html.title,
-          text: result.html.text,
-          publishedTime: result.html.publishedTime,
+          title: result.data.title,
+          text: result.data.text,
+          publishedTime: result.data.publishedTime,
+          source: result.source,
         });
       } else {
         // update failed articles in DB with the fail reason
@@ -134,14 +164,14 @@ export class ProcessArticles extends WorkflowEntrypoint<Env, Params> {
             .update($articles)
             .set({
               processedAt: new Date(),
-              failReason: result.error ? String(result.error) : 'Unknown error',
+              failReason: 'error' in result && result.error ? String(result.error) : 'Unknown error',
             })
             .where(eq($articles.id, result.id));
         });
       }
     }
 
-    // process with LLM
+    // Process with LLM - using Gemini 3 Flash with thinking levels
     await Promise.all(
       articlesToProcess.map(async article => {
         const articleAnalysis = await step.do(
@@ -151,11 +181,20 @@ export class ProcessArticles extends WorkflowEntrypoint<Env, Params> {
             timeout: '1 minute',
           },
           async () => {
+            // Use Gemini 3 Flash with low thinking level for standard analysis
             const response = await generateObject({
-              model: google('gemini-2.0-flash'),
+              model: google(analysisModel.model),
               temperature: 0,
               prompt: getArticleAnalysisPrompt(article.title, article.text),
               schema: articleAnalysisSchema,
+              // Gemini 3 thinking level configuration
+              experimental_providerMetadata: {
+                google: {
+                  thinkingConfig: {
+                    thinkingLevel: analysisModel.thinkingLevel || 'low',
+                  },
+                },
+              },
             });
             return response.object;
           }
@@ -190,6 +229,16 @@ export class ProcessArticles extends WorkflowEntrypoint<Env, Params> {
     );
 
     console.log(`Processed ${articlesToProcess.length} articles`);
+
+    // Log source breakdown
+    const sourceBreakdown = articlesToProcess.reduce(
+      (acc, a) => {
+        acc[a.source] = (acc[a.source] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
+    console.log(`Source breakdown:`, sourceBreakdown);
 
     // check if there are articles to process still
     const remainingArticles = await step.do('get remaining articles', dbStepConfig, async () =>

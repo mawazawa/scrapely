@@ -19,7 +19,7 @@ meridian/
 └── package.json          # Root monorepo config (Turborepo + pnpm)
 ```
 
-## Tech Stack
+## Tech Stack (December 2025)
 
 | Layer | Technology |
 |-------|------------|
@@ -27,9 +27,32 @@ meridian/
 | Infrastructure | Cloudflare Workers, Workflows, Pages |
 | Backend | Hono (TypeScript), Cloudflare Workflows |
 | Database | PostgreSQL + Drizzle ORM |
-| AI/LLM | Google Gemini (2.0 Flash primary, 2.5 Pro for analysis) |
+| AI/LLM | See AI Models section below |
 | ML Pipeline | Python: UMAP, HDBSCAN, multilingual-e5-small embeddings |
 | Frontend | Nuxt 3, Vue 3, Tailwind CSS 4 |
+
+## AI Models (Cutting-Edge Dec 2025)
+
+| Component | Model | Purpose |
+|-----------|-------|---------|
+| Article Analysis | **Gemini 3 Flash** | Fast classification with thinking levels |
+| Brief Synthesis | **GPT-5.2 Thinking** | 80% fewer hallucinations, best reasoning |
+| Document OCR | **Mistral OCR 3** | PDF processing at $1-2/1K pages |
+| Complex Scraping | **Firecrawl Agent** | AI-powered navigation for paywalled sites |
+| Fallback | Claude Sonnet 4.5, Mistral Large 3 | Multi-provider resilience |
+
+### Model Configuration
+
+Located in `apps/scrapers/src/lib/models.ts`:
+
+```typescript
+const MODELS = {
+  triage: { model: 'gemini-3-flash', thinkingLevel: 'minimal' },
+  analysis: { model: 'gemini-3-flash', thinkingLevel: 'low' },
+  deep: { model: 'gemini-3-pro', thinkingLevel: 'high' },
+  synthesis: { model: 'gpt-5.2', reasoningEffort: 'high' },
+};
+```
 
 ## Key Architecture Components
 
@@ -42,28 +65,52 @@ meridian/
 
 ### 2. Article Processing (`apps/scrapers/src/workflows/processArticles.workflow.ts`)
 
-- **Content extraction**: Direct fetch first, falls back to browser rendering for paywalled sites
-- **LLM Analysis**: Uses Gemini 2.0 Flash for article classification
-- **Output schema**: Language, location, completeness, relevance, structured summary
-- **Self-healing**: Re-triggers workflow if unprocessed articles remain
+Multi-method content extraction pipeline:
 
-### 3. Brief Generation (`apps/briefs/`)
+1. **PDF Detection** → Mistral OCR 3 for document processing
+2. **Firecrawl Agent** → AI scraping for difficult domains (Reuters, NYTimes, WSJ)
+3. **Light Fetch** → Standard HTTP fetch with Readability
+4. **Browser Rendering** → Puppeteer fallback for JS-heavy sites
 
-- **Currently manual**: Jupyter notebook-based workflow
+Analysis uses Gemini 3 Flash with configurable thinking levels.
+
+### 3. Firecrawl Integration (`apps/scrapers/src/lib/firecrawl.ts`)
+
+AI-powered scraping for complex sites:
+
+```typescript
+const FIRECRAWL_DOMAINS = {
+  'reuters.com': 'agent',    // Uses /agent endpoint
+  'nytimes.com': 'agent',
+  'wsj.com': 'agent',
+  'ft.com': 'scrape',        // Standard scrape
+};
+```
+
+### 4. Document OCR (`apps/scrapers/src/lib/documentOcr.ts`)
+
+Mistral OCR 3 for PDF processing:
+- 88.9% handwriting accuracy
+- 96.6% table extraction
+- $1-2 per 1,000 pages
+
+### 5. Brief Generation (`apps/briefs/`)
+
+- **Model**: GPT-5.2 Thinking for synthesis
 - **Pipeline**:
   1. Fetch processed articles via API
   2. Generate embeddings (multilingual-e5-small)
   3. Cluster with UMAP + HDBSCAN
-  4. LLM review of clusters
+  4. LLM review of clusters (Gemini 3 Flash)
   5. Deep analysis per cluster
-  6. Final brief synthesis with previous day's TLDR for continuity
+  6. Final brief synthesis with GPT-5.2 Thinking
 
-### 4. Frontend (`apps/frontend/`)
+### 6. Frontend (`apps/frontend/`)
 
 - **Framework**: Nuxt 3 with SSR/SSG
 - **Styling**: Tailwind CSS 4 with typography plugin
-- **Rendering**: Markdown briefs with KaTeX support
-- **API**: Server routes connect to PostgreSQL for reports
+- **Admin Dashboard**: `/admin` - Beautiful stats dashboard
+- **API**: Server routes for reports and stats
 
 ## Database Schema
 
@@ -109,12 +156,18 @@ pnpm --filter @meridian/scrapers test       # Run scraper tests (Vitest)
 ## Environment Variables
 
 ### Scrapers (`apps/scrapers/.dev.vars`)
-```
+```bash
 DATABASE_URL=              # PostgreSQL connection string
-GOOGLE_API_KEY=            # Google AI API key
+GOOGLE_API_KEY=            # Google Gemini 3 API key
 GOOGLE_BASE_URL=           # Google AI base URL
 MERIDIAN_SECRET_KEY=       # API authentication secret
 CLOUDFLARE_ACCOUNT_ID=     # For browser rendering
+
+# Optional - Enable advanced features
+OPENAI_API_KEY=            # GPT-5.2 for briefs
+ANTHROPIC_API_KEY=         # Claude 4.5 fallback
+MISTRAL_API_KEY=           # Mistral OCR 3 for PDFs
+FIRECRAWL_API_KEY=         # AI scraping for complex sites
 ```
 
 ### Frontend (`apps/frontend/.env`)
@@ -124,7 +177,8 @@ NUXT_DATABASE_URL=         # PostgreSQL connection string
 
 ### Briefs (`apps/briefs/.env`)
 ```
-GOOGLE_API_KEY=            # For LLM calls
+GOOGLE_API_KEY=            # For Gemini 3 calls
+OPENAI_API_KEY=            # For GPT-5.2 synthesis
 MERIDIAN_SECRET_KEY=       # API authentication
 ```
 
@@ -170,6 +224,11 @@ await db.select().from($articles).where(and(...));
 - `GET /reports/:slug` - Get specific report
 - `GET /openGraph/:slug` - Open Graph image generation
 
+### Frontend (`/api/`)
+- `GET /api/stats` - Dashboard statistics
+- `GET /api/reports` - List reports
+- `POST /api/subscribe` - Newsletter signup
+
 ## Deployment
 
 ### CI/CD (`.github/workflows/deploy-services.yaml`)
@@ -198,33 +257,32 @@ pnpm --filter @meridian/frontend build
 
 | File | Purpose |
 |------|---------|
-| `apps/scrapers/wrangler.toml` | Worker config, cron schedules, workflow bindings |
+| `apps/scrapers/src/lib/models.ts` | AI model configuration |
+| `apps/scrapers/src/lib/firecrawl.ts` | Firecrawl AI scraping |
+| `apps/scrapers/src/lib/documentOcr.ts` | Mistral OCR 3 integration |
 | `apps/scrapers/src/prompts/articleAnalysis.prompt.ts` | LLM prompt for article classification |
+| `apps/scrapers/wrangler.toml` | Worker config, cron schedules, workflow bindings |
 | `packages/database/src/schema.ts` | Database schema definition |
-| `apps/frontend/nuxt.config.ts` | Nuxt configuration |
+| `apps/frontend/src/pages/admin/index.vue` | Admin dashboard |
+| `apps/briefs/src/llm.py` | Multi-model LLM client |
 | `.prettierrc` | Code formatting rules |
 
-## Current Limitations & TODOs
+## Current Features
 
-1. **Brief generation is manual** - Python notebook needs automation
-2. **No newsletter distribution** - Email form exists but no send logic
-3. **Limited monitoring** - Need better scraping robustness tracking
-4. **Tricky domains** - Some sites (Reuters, NYTimes) require browser rendering
-
-## AI Model Usage
-
-| Component | Model | Purpose |
-|-----------|-------|---------|
-| Article Analysis | Gemini 2.0 Flash | Fast, cheap classification & summarization |
-| Cluster Review | Gemini 2.5 Pro | Long-context cluster analysis |
-| Brief Synthesis | Gemini 2.5 Pro | Final briefing generation with analytical tone |
+- **Multi-provider AI**: Gemini 3, GPT-5.2, Claude 4.5, Mistral
+- **PDF Processing**: Mistral OCR 3 for document sources
+- **AI Scraping**: Firecrawl Agent for complex sites
+- **Beautiful Dashboard**: `/admin` with real-time stats
+- **Thinking Levels**: Configurable Gemini 3 reasoning depth
 
 ## Tips for AI Assistants
 
-1. **Always check existing patterns** before adding new code
+1. **Use cutting-edge models** - Gemini 3 Flash/Pro, GPT-5.2, Mistral OCR 3
 2. **Use neverthrow** for error handling in async operations
 3. **Follow the `$tableName` convention** for Drizzle table references
 4. **Test RSS parsing** with fixtures in `apps/scrapers/test/fixtures/`
 5. **Database migrations** must be generated locally and committed
 6. **Wrangler secrets** are set via `wrangler secret put KEY_NAME`
-7. **The Python briefs code** uses OpenAI SDK pointed at Gemini's OpenAI-compatible endpoint
+7. **Configure thinking levels** for Gemini 3 based on task complexity
+8. **Use Firecrawl Agent** for paywalled or complex sites
+9. **Enable Mistral OCR** for PDF news sources
