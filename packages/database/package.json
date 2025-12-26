@@ -20,14 +20,14 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "dotenv": "^16.4.7",
-    "drizzle-orm": "^0.41.0",
-    "postgres": "^3.4.5"
+    "dotenv": "^16.5.0",
+    "drizzle-orm": "^0.45.1",
+    "postgres": "^3.4.7"
   },
   "devDependencies": {
     "@meridian/typescript-config": "workspace:*",
-    "@types/node": "^22.13.14",
-    "drizzle-kit": "^0.30.6",
-    "typescript": "^5.8.2"
+    "@types/node": "^22.15.3",
+    "drizzle-kit": "^0.31.8",
+    "typescript": "^5.8.3"
   }
 }

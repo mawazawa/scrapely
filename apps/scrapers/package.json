@@ -15,24 +15,27 @@
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@cloudflare/vitest-pool-workers": "^0.8.7",
-    "@cloudflare/workers-types": "^4.20250327.0",
-    "typescript": "^5.8.2",
-    "vitest": "~3.0.9",
-    "wrangler": "^4.1.0"
+    "@cloudflare/vitest-pool-workers": "^0.8.10",
+    "@cloudflare/workers-types": "^4.20251218.0",
+    "typescript": "^5.8.3",
+    "vitest": "~3.2.0",
+    "wrangler": "^4.54.0"
   },
   "dependencies": {
-    "@ai-sdk/google": "^1.2.3",
-    "@cloudflare/puppeteer": "^0.0.15",
-    "@hono/zod-validator": "^0.4.3",
+    "@ai-sdk/google": "^3.0.1",
+    "@ai-sdk/openai": "^3.0.1",
+    "@ai-sdk/anthropic": "^3.0.1",
+    "@ai-sdk/mistral": "^3.0.1",
+    "@cloudflare/puppeteer": "^1.0.4",
+    "@hono/zod-validator": "^0.7.6",
     "@meridian/database": "workspace:*",
     "@mozilla/readability": "^0.6.0",
-    "ai": "^4.2.6",
-    "fast-xml-parser": "^5.0.9",
-    "hono": "^4.7.4",
-    "linkedom": "^0.18.9",
+    "ai": "^6.0.3",
+    "fast-xml-parser": "^5.2.0",
+    "hono": "^4.11.3",
+    "linkedom": "^0.18.11",
     "neverthrow": "^8.2.0",
-    "workers-og": "^0.0.25",
-    "zod": "^3.24.2"
+    "workers-og": "^0.0.26",
+    "zod": "^3.24.4"
   }
 }
