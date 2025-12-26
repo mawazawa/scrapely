@@ -89,11 +89,8 @@ export class ProcessArticles extends WorkflowEntrypoint<Env, Params> {
           let articleData: { title: string; text: string; publishedTime?: string } | undefined = undefined;
           let source: 'fetch' | 'browser' | 'firecrawl' | 'ocr' = 'fetch';
 
-          // 1. Check if PDF - use Mistral OCR 3
+          // 1. Check if PDF - use Gemini 3 or Mistral OCR 3
           if (isPdfUrl(article.url)) {
-            if (!env.MISTRAL_API_KEY) {
-              return { id: article.id, success: false, error: 'PDF processing requires MISTRAL_API_KEY' };
-            }
             const ocrResult = await processDocument(env, article.url);
             if (ocrResult.isErr()) {
               return { id: article.id, success: false, error: ocrResult.error.message };
@@ -103,7 +100,7 @@ export class ProcessArticles extends WorkflowEntrypoint<Env, Params> {
               text: ocrResult.value.text,
             };
             source = 'ocr';
-            console.log(`[OCR] Processed PDF: ${article.url} (${ocrResult.value.pages} pages)`);
+            console.log(`[OCR:${ocrResult.value.provider}] Processed PDF: ${article.url}${ocrResult.value.pages ? ` (${ocrResult.value.pages} pages)` : ''}`);
           }
 
           // 2. Check if Firecrawl domain - use AI scraping
