@@ -286,3 +286,73 @@ pnpm --filter @meridian/frontend build
 7. **Configure thinking levels** for Gemini 3 based on task complexity
 8. **Use Firecrawl Agent** for paywalled or complex sites
 9. **Enable Mistral OCR** for PDF news sources
+
+---
+
+## MANDATORY: Turn-End Requirements
+
+**At the end of EVERY conversation turn, before finishing, you MUST:**
+
+### 1. Update TODO.md
+Update `/TODO.md` with the next 10 highest leverage actions:
+- Each action must have a **confidence score** (0-100%)
+- Each action must be broken into **10-20 atomic subtasks**
+- Each atomic subtask must touch **≤5 files**
+- Include **web research** for technology choices
+- Validate **documentation recency** as of today's date
+- Apply **temporal metacognition** (awareness that documentation ages)
+
+### 2. Update CHANGELOG.md
+Update `/CHANGELOG.md` with:
+- **ISO 8601 timestamp** for each entry
+- Description of changes made
+- Files created/modified
+- Confidence scores for implementations
+
+### 3. Research Validation
+Before recommending technologies:
+- **Web search** for latest versions and best practices
+- Check documentation is **current as of today** (dynamic date)
+- Note when documentation may be outdated
+- Provide **alternative approaches** if confidence < 80%
+
+### 4. Cognitive Empathy Analysis
+For significant changes, analyze from multiple viewpoints:
+- **User perspective**: How does this affect end users?
+- **Developer perspective**: Is this maintainable?
+- **Operations perspective**: Can this be monitored/debugged?
+
+### Example TODO.md Entry Format
+```markdown
+## Action 1: [Name] (Confidence: XX%)
+**Research Date**: YYYY-MM-DD
+**Documentation Validated**: [Yes/Needs Update]
+
+### Why This Matters
+[Brief explanation]
+
+### Atomic Subtasks
+| # | Task | Files (≤5) | Description |
+|---|------|------------|-------------|
+| 1.1 | Task name | `file1.ts`, `file2.ts` | Description |
+```
+
+### Example CHANGELOG.md Entry Format
+```markdown
+## [YYYY-MM-DDTHH:MM:SSZ] Session Update
+
+### Changes Made
+- Feature: [description]
+- Fix: [description]
+
+### Files Modified
+- `path/to/file.ts` - [what changed]
+
+### Confidence Scores
+- Implementation: XX%
+- Testing: XX%
+```
+
+---
+
+**This requirement ensures continuous improvement tracking and maintains project momentum across sessions.**
