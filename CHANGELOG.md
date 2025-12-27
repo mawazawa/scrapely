@@ -4,6 +4,47 @@ All notable changes to the Meridian project are documented here with ISO 8601 ti
 
 ---
 
+## [2025-12-27T16:00:00Z] Third Roadmap Implementation - Advanced Features
+
+### Changes Made
+- **Agents SDK**: Implemented Cloudflare Agents SDK with ArticleAgent for agentic processing
+- **Source Health**: Added source health monitoring with success rate tracking
+- **Deduplication**: Implemented SimHash-based article deduplication
+- **User Preferences**: Added user preferences with topic/region filtering
+- **Content Moderation**: Created AI-powered content moderation pipeline
+- **Semantic Search**: Implemented vector-based search with Vectorize support
+- **Version History**: Added brief version history with diff tracking
+- **Feed Discovery**: Created RSS feed autodiscovery from URLs and topics
+- **Push Notifications**: Implemented Web Push notifications with VAPID
+
+### Files Created
+- `apps/scrapers/src/agents/ArticleAgent.ts` - Article processing agent
+- `apps/scrapers/src/agents/state.ts` - Agent state management
+- `apps/scrapers/src/agents/approval.ts` - Human-in-loop approval
+- `apps/scrapers/src/lib/sourceHealth.ts` - Source health monitoring
+- `apps/scrapers/src/lib/dedup.ts` - SimHash deduplication
+- `apps/scrapers/src/lib/preferences.ts` - User preferences
+- `apps/scrapers/src/lib/moderation.ts` - Content moderation
+- `apps/scrapers/src/lib/search.ts` - Semantic search
+- `apps/scrapers/src/lib/versionHistory.ts` - Brief versions
+- `apps/scrapers/src/lib/feedDiscovery.ts` - RSS discovery
+- `apps/scrapers/src/lib/webPush.ts` - Push notifications
+- `apps/scrapers/test/lib/dedup.spec.ts` - Deduplication tests
+- `apps/scrapers/test/lib/sourceHealth.spec.ts` - Health tests
+
+### Confidence Scores
+- Cloudflare Agents SDK: 87%
+- Source Health Monitoring: 90%
+- Article Deduplication: 88%
+- User Preferences: 82%
+- Content Moderation: 84%
+- Semantic Search: 85%
+- Version History: 83%
+- Feed Discovery: 79%
+- Push Notifications: 76%
+
+---
+
 ## [2025-12-27T14:00:00Z] Second Roadmap Implementation - Infrastructure & UX
 
 ### Changes Made
