@@ -1,0 +1,77 @@
+{
+  "common": {
+    "loading": "Cargando...",
+    "error": "Ocurrió un error",
+    "retry": "Intentar de nuevo",
+    "refresh": "Actualizar",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "close": "Cerrar",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "previous": "Anterior",
+    "search": "Buscar",
+    "notFound": "No encontrado"
+  },
+  "nav": {
+    "home": "Inicio",
+    "briefs": "Informes",
+    "admin": "Admin",
+    "settings": "Configuración",
+    "about": "Acerca de"
+  },
+  "home": {
+    "title": "Meridian",
+    "subtitle": "Informes de Inteligencia con IA",
+    "description": "Obtén informes de inteligencia de nivel presidencial, construidos con IA",
+    "latestBrief": "Último Informe",
+    "viewAllBriefs": "Ver Todos los Informes",
+    "subscribe": "Suscríbete a los Informes Diarios"
+  },
+  "briefs": {
+    "title": "Informes de Inteligencia",
+    "noBriefs": "No hay informes disponibles todavía",
+    "readMore": "Leer Más",
+    "publishedOn": "Publicado el",
+    "articlesAnalyzed": "artículos analizados",
+    "generatedBy": "Generado por"
+  },
+  "admin": {
+    "title": "Panel de Administración",
+    "subtitle": "Panel de Inteligencia",
+    "refresh": "Actualizar",
+    "latestBrief": "Último Informe",
+    "stats": {
+      "sources": "Fuentes",
+      "totalArticles": "Artículos Totales",
+      "scraped24h": "Recopilados (24h)",
+      "processed24h": "Procesados (24h)",
+      "pending": "Pendientes",
+      "failed": "Fallidos"
+    },
+    "recentBriefs": "Informes Recientes",
+    "aiModels": "Modelos de IA (Dic 2025)",
+    "topSources": "Principales Fuentes (7 días)",
+    "contentAnalysis": "Análisis de Contenido (7 días)",
+    "systemOperational": "Sistema Operativo"
+  },
+  "newsletter": {
+    "title": "Mantente Informado",
+    "description": "Suscríbete para recibir informes diarios de inteligencia",
+    "emailPlaceholder": "Ingresa tu email",
+    "subscribe": "Suscribirse",
+    "success": "¡Suscripción exitosa!",
+    "error": "La suscripción falló. Por favor intenta de nuevo."
+  },
+  "footer": {
+    "copyright": "Sistema de Inteligencia Meridian",
+    "privacy": "Privacidad",
+    "terms": "Términos",
+    "contact": "Contacto"
+  },
+  "dates": {
+    "today": "Hoy",
+    "yesterday": "Ayer",
+    "daysAgo": "hace {count} días"
+  }
+}

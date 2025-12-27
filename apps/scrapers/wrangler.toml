@@ -8,6 +8,12 @@ compatibility_flags = [ "nodejs_compat" ]
 enabled = true
 head_sampling_rate = 1 # optional. default = 1.
 
+# KV namespace for caching
+[[kv_namespaces]]
+binding = "CACHE_KV"
+id = "meridian-cache"
+preview_id = "meridian-cache-preview"
+
 [[workflows]]
 name = "meridian_scrape_rss_feed"
 binding = "SCRAPE_RSS_FEED"
@@ -18,14 +24,28 @@ name = "meridian_process_articles"
 binding = "PROCESS_ARTICLES"
 class_name = "ProcessArticles"
 
+[[workflows]]
+name = "meridian_newsletter"
+binding = "SEND_NEWSLETTER"
+class_name = "SendNewsletter"
+
+# Durable Objects for real-time updates
+[[durable_objects.bindings]]
+name = "STATS_ROOM"
+class_name = "StatsRoom"
+
+[[migrations]]
+tag = "v1"
+new_classes = ["StatsRoom"]
+
 [vars]
 CORS_ORIGIN = "http://127.0.0.1:3000"
 
 [triggers]
 # Schedule cron triggers:
-# - Every hour (at minute 4)
-# - At 07:08 (UTC) every day
-crons = [ "4 * * * *" ]
+# - Every hour (at minute 4): RSS feed scraping
+# - Daily at 08:00 UTC: Newsletter delivery
+crons = [ "4 * * * *", "0 8 * * *" ]
 
 [env.production]
 [[env.production.workflows]]
@@ -37,6 +57,15 @@ class_name = "ScrapeRssFeed"
 name = "meridian-production-article-processor"
 binding = "PROCESS_ARTICLES"
 class_name = "ProcessArticles"
+
+[[env.production.workflows]]
+name = "meridian-production-newsletter"
+binding = "SEND_NEWSLETTER"
+class_name = "SendNewsletter"
+
+[[env.production.durable_objects.bindings]]
+name = "STATS_ROOM"
+class_name = "StatsRoom"
 
 [env.production.vars]
 CORS_ORIGIN = "https://news.iliane.xyz"

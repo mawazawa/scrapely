@@ -1,60 +1,68 @@
 # Meridian TODO: Next 10 Highest Leverage Actions
 
-> **Last Updated**: 2025-12-27T12:30:00Z
+> **Last Updated**: 2025-12-27T14:00:00Z
 > **Research Validated**: December 27, 2025
-> **Previous Actions Completed**: 10 (see ROADMAP.md)
+> **Previous Actions Completed**: 20 (see ROADMAP.md, CHANGELOG.md)
 
 ---
 
-## Overview
+## Recently Completed (This Session)
+
+| # | Action | Confidence | Status |
+|---|--------|------------|--------|
+| 1 | Add OpenTelemetry Tracing | 94% | ✅ Completed |
+| 4 | Add E2E Testing with Playwright | 93% | ✅ Completed |
+| 5 | Implement KV/D1 Caching Layer | 89% | ✅ Completed |
+| 6 | Add Real-time WebSocket Updates | 85% | ✅ Completed |
+| 8 | Add Brief Scheduling & Delivery | 88% | ✅ Completed |
+| 9 | Implement Analytics Dashboard | 86% | ✅ Completed |
+| 10 | Add Multi-language Support | 80% | ✅ Completed |
+
+---
+
+## Next 10 High-Leverage Actions
 
 | # | Action | Confidence | Impact | Effort | Status |
 |---|--------|------------|--------|--------|--------|
-| 1 | Add OpenTelemetry Tracing | 94% | High | 1-2 days | Pending |
+| 1 | Implement Cloudflare Agents SDK | 87% | High | 2-3 days | Pending |
 | 2 | Upgrade to Vitest 4 Browser Mode | 91% | Medium | 1 day | Pending |
-| 3 | Implement Cloudflare Agents SDK | 87% | High | 2-3 days | Pending |
-| 4 | Add E2E Testing with Playwright | 93% | High | 2 days | Pending |
-| 5 | Implement KV/D1 Caching Layer | 89% | High | 1-2 days | Pending |
-| 6 | Add Real-time WebSocket Updates | 85% | Medium | 2 days | Pending |
-| 7 | Implement User Preferences | 82% | Medium | 2-3 days | Pending |
-| 8 | Add Brief Scheduling & Delivery | 88% | High | 2 days | Pending |
-| 9 | Implement Analytics Dashboard | 86% | Medium | 2 days | Pending |
-| 10 | Add Multi-language Support | 80% | Medium | 2-3 days | Pending |
+| 3 | Implement User Preferences | 82% | Medium | 2-3 days | Pending |
+| 4 | Add Source Health Monitoring | 90% | High | 1-2 days | Pending |
+| 5 | Implement Article Deduplication | 88% | High | 1-2 days | Pending |
+| 6 | Add Semantic Search | 85% | High | 2-3 days | Pending |
+| 7 | Implement Brief Version History | 83% | Medium | 1-2 days | Pending |
+| 8 | Add RSS Feed Discovery | 79% | Medium | 2 days | Pending |
+| 9 | Implement Push Notifications | 76% | Medium | 2-3 days | Pending |
+| 10 | Add Content Moderation Pipeline | 84% | High | 2-3 days | Pending |
 
 ---
 
-## Action 1: Add OpenTelemetry Tracing (Confidence: 94%)
+## Action 1: Implement Cloudflare Agents SDK (Confidence: 87%)
 
 **Research Date**: 2025-12-27
-**Documentation Validated**: Yes - [Cloudflare Workers Tracing Open Beta](https://blog.cloudflare.com/workers-tracing-now-in-open-beta/) (Dec 2025)
+**Documentation Validated**: Yes - [Agents SDK v0.3.0](https://developers.cloudflare.com/changelog/2025-12-22-agents-sdk-ai-sdk-v6/) (Dec 22, 2025)
 
 ### Why This Matters
-- Automatic instrumentation of all I/O operations
-- OpenTelemetry-compliant spans for debugging
-- Compatible with Grafana, Honeycomb, Axiom
-- Zero code changes required for basic tracing
-- Essential for production debugging
-
-### Web Research Summary
-- Workers automatic tracing is now in open beta
-- Push-based pipeline forwards telemetry directly
-- Spans billed as observability events starting Jan 15, 2026
-- See: [Grafana Cloud Integration](https://grafana.com/blog/2025/12/04/send-opentelemetry-traces-and-logs-from-cloudflare-workers-to-grafana-cloud/)
+- Unified tool pattern with AI SDK v6
+- Dynamic tool approval for human-in-loop
+- Built-in state management with SQL
+- WebSocket streaming for long-running tasks
+- Ideal for agentic article processing
 
 ### Atomic Subtasks
 
 | # | Task | Files (≤5) | Description |
 |---|------|------------|-------------|
-| 1.1 | Enable tracing in wrangler.toml | `apps/scrapers/wrangler.toml` | Add observability.tracing = true |
-| 1.2 | Configure tracing destination | `apps/scrapers/wrangler.toml` | Add OTel endpoint config |
-| 1.3 | Create trace context utility | `apps/scrapers/src/lib/tracing.ts` | Helper for custom spans |
-| 1.4 | Add trace IDs to logger | `apps/scrapers/src/lib/logger.ts`, `apps/scrapers/src/lib/tracing.ts` | Correlate logs with traces |
-| 1.5 | Instrument workflow steps | `apps/scrapers/src/workflows/processArticles.workflow.ts` | Add custom spans for key operations |
-| 1.6 | Instrument rssFeed workflow | `apps/scrapers/src/workflows/rssFeed.workflow.ts` | Add custom spans |
-| 1.7 | Add tracing to Hono middleware | `apps/scrapers/src/app.ts`, `apps/scrapers/src/lib/tracing.ts` | Request tracing |
-| 1.8 | Configure Grafana dashboard | `docs/OBSERVABILITY.md` | Document setup process |
-| 1.9 | Add trace sampling config | `apps/scrapers/wrangler.toml` | Configure sampling rate |
-| 1.10 | Test tracing in dev | `apps/scrapers/test/lib/tracing.spec.ts` | Verify trace generation |
+| 1.1 | Install agents SDK | `apps/scrapers/package.json` | Add agents@^0.3.0 |
+| 1.2 | Install workers-ai-provider | `apps/scrapers/package.json` | Add workers-ai-provider@^3.0.0 |
+| 1.3 | Create agent class | `apps/scrapers/src/agents/ArticleAgent.ts` | Article processing agent |
+| 1.4 | Define agent tools | `apps/scrapers/src/agents/tools/` | Scrape, analyze, summarize tools |
+| 1.5 | Add agent state schema | `apps/scrapers/src/agents/state.ts` | Agent state management |
+| 1.6 | Create agent workflow | `apps/scrapers/src/workflows/agent.workflow.ts` | Integrate with workflow |
+| 1.7 | Add WebSocket handler | `apps/scrapers/src/app.ts` | Real-time agent updates |
+| 1.8 | Configure agent bindings | `apps/scrapers/wrangler.toml` | Add agent bindings |
+| 1.9 | Add human-in-loop approval | `apps/scrapers/src/agents/approval.ts` | Manual review |
+| 1.10 | Test agent functionality | `apps/scrapers/test/agents/ArticleAgent.spec.ts` | Agent tests |
 
 ---
 
@@ -68,13 +76,6 @@
 - Visual regression testing built-in
 - Playwright Traces integration
 - 2-5x faster than traditional frameworks
-- 17M weekly downloads (up from 7M)
-
-### Web Research Summary
-- Vitest 4.0 released December 2025
-- Browser Mode graduated to stable
-- Requires separate provider packages (@vitest/browser-playwright)
-- See: [Vitest Features](https://vitest.dev/guide/features)
 
 ### Atomic Subtasks
 
@@ -83,139 +84,17 @@
 | 2.1 | Upgrade vitest to v4 | `apps/scrapers/package.json` | Update to vitest@^4.0.0 |
 | 2.2 | Install browser provider | `apps/scrapers/package.json` | Add @vitest/browser-playwright |
 | 2.3 | Configure browser mode | `apps/scrapers/vitest.config.ts` | Enable browser testing |
-| 2.4 | Add visual regression test | `apps/scrapers/test/visual/openGraph.spec.ts` | Test OG image generation |
-| 2.5 | Configure screenshot baseline | `apps/scrapers/vitest.config.ts`, `.gitignore` | Setup snapshot directory |
-| 2.6 | Add component tests | `apps/frontend/test/components/` | Vue component browser tests |
-| 2.7 | Configure frontend vitest | `apps/frontend/vitest.config.ts` | Setup Nuxt + Vitest |
-| 2.8 | Add CI browser test step | `.github/workflows/deploy-services.yaml` | Run browser tests in CI |
-| 2.9 | Add performance benchmarks | `apps/scrapers/test/benchmarks/` | Use vitest bench |
-| 2.10 | Document testing strategy | `docs/TESTING.md` | Testing best practices |
+| 2.4 | Add visual regression test | `apps/scrapers/test/visual/openGraph.spec.ts` | Test OG images |
+| 2.5 | Configure screenshot baseline | `apps/scrapers/vitest.config.ts`, `.gitignore` | Snapshot dir |
+| 2.6 | Add component tests | `apps/frontend/test/components/` | Vue browser tests |
+| 2.7 | Configure frontend vitest | `apps/frontend/vitest.config.ts` | Nuxt + Vitest |
+| 2.8 | Add CI browser test step | `.github/workflows/deploy-services.yaml` | CI browser tests |
+| 2.9 | Add performance benchmarks | `apps/scrapers/test/benchmarks/` | vitest bench |
+| 2.10 | Document testing strategy | `docs/TESTING.md` | Best practices |
 
 ---
 
-## Action 3: Implement Cloudflare Agents SDK (Confidence: 87%)
-
-**Research Date**: 2025-12-27
-**Documentation Validated**: Yes - [Agents SDK v0.3.0](https://developers.cloudflare.com/changelog/2025-12-22-agents-sdk-ai-sdk-v6/) (Dec 22, 2025)
-
-### Why This Matters
-- Unified tool pattern with AI SDK v6
-- Dynamic tool approval for human-in-loop
-- Built-in state management with SQL
-- WebSocket streaming for long-running tasks
-- Ideal for agentic article processing
-
-### Web Research Summary
-- Agents SDK v0.3.0 released Dec 22, 2025
-- Full AI SDK v6 compatibility
-- workers-ai-provider v3.0.0 for Workers AI models
-- See: [Cloudflare Workers AI](https://developers.cloudflare.com/workers-ai/)
-
-### Atomic Subtasks
-
-| # | Task | Files (≤5) | Description |
-|---|------|------------|-------------|
-| 3.1 | Install agents SDK | `apps/scrapers/package.json` | Add agents@^0.3.0 |
-| 3.2 | Install workers-ai-provider | `apps/scrapers/package.json` | Add workers-ai-provider@^3.0.0 |
-| 3.3 | Create agent class | `apps/scrapers/src/agents/ArticleAgent.ts` | Article processing agent |
-| 3.4 | Define agent tools | `apps/scrapers/src/agents/tools/` | Scrape, analyze, summarize tools |
-| 3.5 | Add agent state schema | `apps/scrapers/src/agents/state.ts` | Agent state management |
-| 3.6 | Create agent workflow | `apps/scrapers/src/workflows/agent.workflow.ts` | Integrate agent with workflow |
-| 3.7 | Add WebSocket handler | `apps/scrapers/src/app.ts` | Real-time agent updates |
-| 3.8 | Configure agent bindings | `apps/scrapers/wrangler.toml` | Add agent bindings |
-| 3.9 | Add human-in-loop approval | `apps/scrapers/src/agents/approval.ts` | Manual review for edge cases |
-| 3.10 | Test agent functionality | `apps/scrapers/test/agents/ArticleAgent.spec.ts` | Agent unit tests |
-
----
-
-## Action 4: Add E2E Testing with Playwright (Confidence: 93%)
-
-**Research Date**: 2025-12-27
-**Documentation Validated**: Yes - Current Playwright docs
-
-### Why This Matters
-- No E2E tests for user flows currently
-- Critical paths untested (admin dashboard, briefs)
-- Playwright integrates with Vitest 4
-- Cross-browser testing support
-- Visual regression for UI
-
-### Atomic Subtasks
-
-| # | Task | Files (≤5) | Description |
-|---|------|------------|-------------|
-| 4.1 | Install Playwright | `apps/frontend/package.json` | Add @playwright/test |
-| 4.2 | Configure Playwright | `apps/frontend/playwright.config.ts` | Setup config |
-| 4.3 | Add test for home page | `apps/frontend/e2e/home.spec.ts` | Test landing page |
-| 4.4 | Add test for admin dashboard | `apps/frontend/e2e/admin.spec.ts` | Test stats display |
-| 4.5 | Add test for briefs list | `apps/frontend/e2e/briefs.spec.ts` | Test brief listing |
-| 4.6 | Add test for brief detail | `apps/frontend/e2e/brief-detail.spec.ts` | Test brief reading |
-| 4.7 | Add test for newsletter signup | `apps/frontend/e2e/newsletter.spec.ts` | Test subscribe flow |
-| 4.8 | Add visual regression | `apps/frontend/e2e/visual.spec.ts` | Screenshot comparisons |
-| 4.9 | Add CI E2E step | `.github/workflows/deploy-services.yaml` | Run E2E in CI |
-| 4.10 | Add test fixtures | `apps/frontend/e2e/fixtures/` | Mock data for tests |
-
----
-
-## Action 5: Implement KV/D1 Caching Layer (Confidence: 89%)
-
-**Research Date**: 2025-12-27
-**Documentation Validated**: Yes - Cloudflare KV/D1 docs current
-
-### Why This Matters
-- Stats API runs 9 queries per request
-- No caching = high database load
-- KV provides edge caching
-- D1 for structured cache
-- Reduces latency significantly
-
-### Atomic Subtasks
-
-| # | Task | Files (≤5) | Description |
-|---|------|------------|-------------|
-| 5.1 | Create KV namespace | `apps/scrapers/wrangler.toml` | Add CACHE_KV binding |
-| 5.2 | Create cache utility | `apps/scrapers/src/lib/cache.ts` | KV wrapper with TTL |
-| 5.3 | Cache stats response | `apps/scrapers/src/app.ts`, `apps/scrapers/src/lib/cache.ts` | Cache /events stats |
-| 5.4 | Cache report list | `apps/scrapers/src/routers/reports.router.ts`, `apps/scrapers/src/lib/cache.ts` | Cache report listings |
-| 5.5 | Add cache invalidation | `apps/scrapers/src/lib/cache.ts` | Invalidate on updates |
-| 5.6 | Cache source list | `apps/scrapers/src/app.ts` | Cache sources query |
-| 5.7 | Add cache headers | `apps/scrapers/src/app.ts` | Stale-while-revalidate |
-| 5.8 | Configure frontend caching | `apps/frontend/nuxt.config.ts` | Route caching rules |
-| 5.9 | Add cache metrics | `apps/scrapers/src/lib/cache.ts`, `apps/scrapers/src/lib/logger.ts` | Track hit/miss |
-| 5.10 | Test cache behavior | `apps/scrapers/test/lib/cache.spec.ts` | Cache tests |
-
----
-
-## Action 6: Add Real-time WebSocket Updates (Confidence: 85%)
-
-**Research Date**: 2025-12-27
-**Documentation Validated**: Yes - Cloudflare Durable Objects/WebSockets docs
-
-### Why This Matters
-- Admin dashboard polls every 30s
-- No real-time processing visibility
-- WebSockets reduce server load
-- Better UX for monitoring
-- Foundation for live alerts
-
-### Atomic Subtasks
-
-| # | Task | Files (≤5) | Description |
-|---|------|------------|-------------|
-| 6.1 | Create Durable Object | `apps/scrapers/src/durable/StatsRoom.ts` | WebSocket room |
-| 6.2 | Add DO binding | `apps/scrapers/wrangler.toml`, `apps/scrapers/src/index.ts` | Configure binding |
-| 6.3 | Add WebSocket route | `apps/scrapers/src/app.ts` | /ws/stats endpoint |
-| 6.4 | Create message types | `apps/scrapers/src/types/websocket.ts` | Type-safe messages |
-| 6.5 | Broadcast workflow updates | `apps/scrapers/src/workflows/processArticles.workflow.ts` | Send progress |
-| 6.6 | Create frontend composable | `apps/frontend/src/composables/useWebSocket.ts` | WebSocket client |
-| 6.7 | Update admin dashboard | `apps/frontend/src/pages/admin/index.vue` | Use WebSocket |
-| 6.8 | Add connection status | `apps/frontend/src/components/ConnectionStatus.vue` | Show connection state |
-| 6.9 | Add reconnection logic | `apps/frontend/src/composables/useWebSocket.ts` | Auto-reconnect |
-| 6.10 | Test WebSocket flow | `apps/scrapers/test/durable/StatsRoom.spec.ts` | DO tests |
-
----
-
-## Action 7: Implement User Preferences (Confidence: 82%)
+## Action 3: Implement User Preferences (Confidence: 82%)
 
 **Research Date**: 2025-12-27
 **Documentation Validated**: Requires schema design
@@ -225,155 +104,243 @@
 - No personalization options
 - Users can't filter by topic/region
 - Foundation for recommendation engine
-- Increases engagement
 
 ### Atomic Subtasks
 
 | # | Task | Files (≤5) | Description |
 |---|------|------------|-------------|
-| 7.1 | Design preferences schema | `packages/database/src/schema.ts` | Add $userPreferences table |
-| 7.2 | Generate migration | `packages/database/migrations/` | Create migration |
-| 7.3 | Create preferences API | `apps/scrapers/src/routers/preferences.router.ts` | CRUD endpoints |
-| 7.4 | Add auth middleware | `apps/scrapers/src/middleware/auth.ts` | User identification |
-| 7.5 | Create preferences form | `apps/frontend/src/pages/preferences.vue` | UI for preferences |
-| 7.6 | Add topic selection | `apps/frontend/src/components/TopicSelector.vue` | Topic multi-select |
-| 7.7 | Add region selection | `apps/frontend/src/components/RegionSelector.vue` | Region filter |
-| 7.8 | Apply preferences to events | `apps/scrapers/src/app.ts` | Filter by prefs |
-| 7.9 | Store prefs in cookie/KV | `apps/scrapers/src/lib/preferences.ts` | Persistence |
-| 7.10 | Test preferences flow | `apps/scrapers/test/routers/preferences.spec.ts` | API tests |
+| 3.1 | Design preferences schema | `packages/database/src/schema.ts` | $userPreferences table |
+| 3.2 | Generate migration | `packages/database/migrations/` | Create migration |
+| 3.3 | Create preferences API | `apps/scrapers/src/routers/preferences.router.ts` | CRUD endpoints |
+| 3.4 | Add auth middleware | `apps/scrapers/src/middleware/auth.ts` | User identification |
+| 3.5 | Create preferences form | `apps/frontend/src/pages/preferences.vue` | UI for prefs |
+| 3.6 | Add topic selection | `apps/frontend/src/components/TopicSelector.vue` | Topic multi-select |
+| 3.7 | Add region selection | `apps/frontend/src/components/RegionSelector.vue` | Region filter |
+| 3.8 | Apply preferences to events | `apps/scrapers/src/app.ts` | Filter by prefs |
+| 3.9 | Store prefs in cookie/KV | `apps/scrapers/src/lib/preferences.ts` | Persistence |
+| 3.10 | Test preferences flow | `apps/scrapers/test/routers/preferences.spec.ts` | API tests |
 
 ---
 
-## Action 8: Add Brief Scheduling & Delivery (Confidence: 88%)
+## Action 4: Add Source Health Monitoring (Confidence: 90%)
 
 **Research Date**: 2025-12-27
-**Documentation Validated**: Yes - Cloudflare Cron/Queues docs
+**Documentation Validated**: Yes - Cloudflare Analytics Engine
 
 ### Why This Matters
-- Newsletter signup exists but no delivery
-- Manual brief generation
-- No scheduling UI
-- Users expect daily delivery
-- Core product feature
+- No visibility into source reliability
+- Failed sources silently break
+- Essential for maintaining quality
+- Enables automated source management
 
 ### Atomic Subtasks
 
 | # | Task | Files (≤5) | Description |
 |---|------|------------|-------------|
-| 8.1 | Create newsletter workflow | `apps/scrapers/src/workflows/newsletter.workflow.ts` | Daily send workflow |
-| 8.2 | Add workflow binding | `apps/scrapers/wrangler.toml`, `apps/scrapers/src/index.ts` | NEWSLETTER binding |
-| 8.3 | Add cron trigger | `apps/scrapers/wrangler.toml` | Daily 8am UTC |
-| 8.4 | Fetch subscribers | `apps/scrapers/src/workflows/newsletter.workflow.ts` | Query newsletter table |
-| 8.5 | Generate brief email | `apps/scrapers/src/lib/email.ts` | Use latest report |
-| 8.6 | Send batch emails | `apps/scrapers/src/workflows/newsletter.workflow.ts` | Rate-limited sends |
-| 8.7 | Track delivery status | `packages/database/src/schema.ts` | Add delivery columns |
-| 8.8 | Add unsubscribe endpoint | `apps/scrapers/src/app.ts` | Handle unsubscribe |
-| 8.9 | Add delivery dashboard | `apps/frontend/src/pages/admin/newsletter.vue` | View send stats |
-| 8.10 | Test newsletter flow | `apps/scrapers/test/workflows/newsletter.spec.ts` | E2E test |
+| 4.1 | Add health columns to sources | `packages/database/src/schema.ts` | successRate, lastError |
+| 4.2 | Generate migration | `packages/database/migrations/` | Add columns |
+| 4.3 | Track scrape success/failure | `apps/scrapers/src/workflows/rssFeed.workflow.ts` | Record outcomes |
+| 4.4 | Calculate rolling success rate | `apps/scrapers/src/lib/sourceHealth.ts` | 7-day rolling average |
+| 4.5 | Create health dashboard view | `apps/frontend/src/pages/admin/sources.vue` | Source health UI |
+| 4.6 | Add health alerts | `apps/scrapers/src/lib/alerts.ts` | Notify on degradation |
+| 4.7 | Implement auto-disable | `apps/scrapers/src/lib/sourceHealth.ts` | Disable failing sources |
+| 4.8 | Add health API endpoint | `apps/scrapers/src/routers/sources.router.ts` | GET /sources/health |
+| 4.9 | Create health trends chart | `apps/frontend/src/components/charts/SourceHealth.vue` | Trend visualization |
+| 4.10 | Test health tracking | `apps/scrapers/test/lib/sourceHealth.spec.ts` | Health tests |
 
 ---
 
-## Action 9: Implement Analytics Dashboard (Confidence: 86%)
+## Action 5: Implement Article Deduplication (Confidence: 88%)
 
 **Research Date**: 2025-12-27
-**Documentation Validated**: Yes - Chart.js/D3 docs current
+**Documentation Validated**: Yes - SimHash/MinHash algorithms
 
 ### Why This Matters
-- Current dashboard shows only counts
-- No trend visualization
-- No processing pipeline metrics
-- No source performance tracking
-- Essential for operations
+- Same story from multiple sources
+- Wastes processing resources
+- Clutters briefs with duplicates
+- Improves brief quality
 
 ### Atomic Subtasks
 
 | # | Task | Files (≤5) | Description |
 |---|------|------------|-------------|
-| 9.1 | Install chart library | `apps/frontend/package.json` | Add chart.js |
-| 9.2 | Create chart components | `apps/frontend/src/components/charts/` | Reusable charts |
-| 9.3 | Add time-series endpoint | `apps/frontend/src/server/api/analytics/timeseries.get.ts` | Historical data |
-| 9.4 | Add article volume chart | `apps/frontend/src/pages/admin/index.vue` | Articles over time |
-| 9.5 | Add source performance | `apps/frontend/src/pages/admin/index.vue` | Source success rates |
-| 9.6 | Add processing metrics | `apps/frontend/src/pages/admin/index.vue` | Pipeline stats |
-| 9.7 | Add relevance trends | `apps/frontend/src/pages/admin/index.vue` | Relevance over time |
-| 9.8 | Add export functionality | `apps/frontend/src/pages/admin/index.vue` | CSV/JSON export |
-| 9.9 | Add date range picker | `apps/frontend/src/components/DateRangePicker.vue` | Filter by date |
-| 9.10 | Cache analytics queries | `apps/frontend/src/server/api/analytics/` | Optimize queries |
+| 5.1 | Add fingerprint column | `packages/database/src/schema.ts` | contentHash field |
+| 5.2 | Generate migration | `packages/database/migrations/` | Add hash column |
+| 5.3 | Implement SimHash | `apps/scrapers/src/lib/dedup.ts` | Content fingerprinting |
+| 5.4 | Add dedup check before processing | `apps/scrapers/src/workflows/processArticles.workflow.ts` | Skip duplicates |
+| 5.5 | Create similarity threshold config | `apps/scrapers/src/lib/dedup.ts` | Configurable threshold |
+| 5.6 | Link related articles | `packages/database/src/schema.ts` | relatedArticles join |
+| 5.7 | Show related articles in UI | `apps/frontend/src/pages/articles/[id].vue` | Related list |
+| 5.8 | Add dedup metrics | `apps/scrapers/src/lib/logger.ts` | Track dedup rate |
+| 5.9 | Create dedup admin view | `apps/frontend/src/pages/admin/dedup.vue` | Review duplicates |
+| 5.10 | Test deduplication | `apps/scrapers/test/lib/dedup.spec.ts` | Dedup tests |
 
 ---
 
-## Action 10: Add Multi-language Support (Confidence: 80%)
+## Action 6: Add Semantic Search (Confidence: 85%)
 
 **Research Date**: 2025-12-27
-**Documentation Validated**: Requires i18n research
+**Documentation Validated**: Yes - Cloudflare Vectorize, AI Gateway
 
 ### Why This Matters
-- UI is English-only
-- Articles analyzed in multiple languages
-- Growing international audience
-- SEO benefits for localized content
-- Better accessibility
+- Current search is keyword-based
+- Can't find conceptually related content
+- Essential for power users
+- Enables "find similar articles"
 
 ### Atomic Subtasks
 
 | # | Task | Files (≤5) | Description |
 |---|------|------------|-------------|
-| 10.1 | Install i18n module | `apps/frontend/package.json` | Add @nuxtjs/i18n |
-| 10.2 | Configure i18n | `apps/frontend/nuxt.config.ts` | Setup locales |
-| 10.3 | Extract English strings | `apps/frontend/src/locales/en.json` | Create base locale |
-| 10.4 | Add Spanish translation | `apps/frontend/src/locales/es.json` | Spanish strings |
-| 10.5 | Add French translation | `apps/frontend/src/locales/fr.json` | French strings |
-| 10.6 | Add language switcher | `apps/frontend/src/components/LanguageSwitcher.vue` | UI component |
-| 10.7 | Localize date formats | `apps/frontend/src/composables/useLocale.ts` | Date formatting |
-| 10.8 | Add RTL support | `apps/frontend/src/assets/css/rtl.css` | RTL styles |
-| 10.9 | Localize SEO meta | `apps/frontend/src/composables/useSEO.ts` | Localized meta |
-| 10.10 | Test i18n | `apps/frontend/test/i18n.spec.ts` | Translation tests |
+| 6.1 | Setup Vectorize index | `apps/scrapers/wrangler.toml` | Add vectorize binding |
+| 6.2 | Generate embeddings on ingest | `apps/scrapers/src/workflows/processArticles.workflow.ts` | Use AI Gateway |
+| 6.3 | Create search endpoint | `apps/scrapers/src/routers/search.router.ts` | Vector search API |
+| 6.4 | Add search UI | `apps/frontend/src/pages/search.vue` | Search page |
+| 6.5 | Implement "similar articles" | `apps/scrapers/src/routers/articles.router.ts` | GET /articles/:id/similar |
+| 6.6 | Add search suggestions | `apps/frontend/src/components/SearchSuggestions.vue` | Autocomplete |
+| 6.7 | Create search analytics | `apps/scrapers/src/lib/searchAnalytics.ts` | Track queries |
+| 6.8 | Add hybrid search | `apps/scrapers/src/routers/search.router.ts` | Combine keyword + vector |
+| 6.9 | Cache popular searches | `apps/scrapers/src/lib/cache.ts` | KV caching |
+| 6.10 | Test search functionality | `apps/scrapers/test/routers/search.spec.ts` | Search tests |
+
+---
+
+## Action 7: Implement Brief Version History (Confidence: 83%)
+
+**Research Date**: 2025-12-27
+**Documentation Validated**: Yes - PostgreSQL history patterns
+
+### Why This Matters
+- No way to see brief edits
+- Can't compare versions
+- Useful for tracking story evolution
+- Enables rollback capability
+
+### Atomic Subtasks
+
+| # | Task | Files (≤5) | Description |
+|---|------|------------|-------------|
+| 7.1 | Create versions table | `packages/database/src/schema.ts` | $reportVersions |
+| 7.2 | Generate migration | `packages/database/migrations/` | Version table |
+| 7.3 | Save version on update | `apps/scrapers/src/routers/reports.router.ts` | Auto-version |
+| 7.4 | Create version history API | `apps/scrapers/src/routers/reports.router.ts` | GET /reports/:id/versions |
+| 7.5 | Add version diff UI | `apps/frontend/src/pages/briefs/[slug]/history.vue` | Diff view |
+| 7.6 | Implement diff algorithm | `apps/frontend/src/lib/diff.ts` | Text diff |
+| 7.7 | Add version restore | `apps/scrapers/src/routers/reports.router.ts` | POST /reports/:id/restore |
+| 7.8 | Create version selector | `apps/frontend/src/components/VersionSelector.vue` | Version dropdown |
+| 7.9 | Add version metadata | `packages/database/src/schema.ts` | author, reason |
+| 7.10 | Test version history | `apps/scrapers/test/routers/reports.spec.ts` | Version tests |
+
+---
+
+## Action 8: Add RSS Feed Discovery (Confidence: 79%)
+
+**Research Date**: 2025-12-27
+**Documentation Validated**: Requires research on feed discovery APIs
+
+### Why This Matters
+- Manual source addition is tedious
+- Users may know topics but not sources
+- Automatic discovery expands coverage
+- Reduces maintenance burden
+
+### Atomic Subtasks
+
+| # | Task | Files (≤5) | Description |
+|---|------|------------|-------------|
+| 8.1 | Create feed discovery service | `apps/scrapers/src/lib/feedDiscovery.ts` | Discover feeds from URL |
+| 8.2 | Integrate Google News RSS | `apps/scrapers/src/lib/feedDiscovery.ts` | Google News topics |
+| 8.3 | Add discovery endpoint | `apps/scrapers/src/routers/sources.router.ts` | POST /sources/discover |
+| 8.4 | Create discovery UI | `apps/frontend/src/pages/admin/discover.vue` | Discovery page |
+| 8.5 | Add feed validation | `apps/scrapers/src/lib/feedDiscovery.ts` | Verify feeds work |
+| 8.6 | Implement topic suggestions | `apps/scrapers/src/lib/feedDiscovery.ts` | Suggest by topic |
+| 8.7 | Add feed preview | `apps/frontend/src/components/FeedPreview.vue` | Preview before add |
+| 8.8 | Track discovery sources | `packages/database/src/schema.ts` | discoveredFrom field |
+| 8.9 | Add bulk import | `apps/scrapers/src/routers/sources.router.ts` | POST /sources/bulk |
+| 8.10 | Test discovery | `apps/scrapers/test/lib/feedDiscovery.spec.ts` | Discovery tests |
+
+---
+
+## Action 9: Implement Push Notifications (Confidence: 76%)
+
+**Research Date**: 2025-12-27
+**Documentation Validated**: Yes - Web Push API, Firebase Cloud Messaging
+
+### Why This Matters
+- Only email notifications currently
+- Users miss time-sensitive news
+- Push has higher engagement
+- Mobile-first experience
+
+### Atomic Subtasks
+
+| # | Task | Files (≤5) | Description |
+|---|------|------------|-------------|
+| 9.1 | Add push subscription table | `packages/database/src/schema.ts` | $pushSubscriptions |
+| 9.2 | Generate migration | `packages/database/migrations/` | Subscriptions table |
+| 9.3 | Create service worker | `apps/frontend/public/sw.js` | Push SW |
+| 9.4 | Add subscription endpoint | `apps/scrapers/src/routers/push.router.ts` | POST /push/subscribe |
+| 9.5 | Implement web-push | `apps/scrapers/src/lib/webPush.ts` | VAPID keys |
+| 9.6 | Add push UI | `apps/frontend/src/components/PushPrompt.vue` | Enable prompt |
+| 9.7 | Send on new brief | `apps/scrapers/src/workflows/newsletter.workflow.ts` | Push + email |
+| 9.8 | Add notification settings | `apps/frontend/src/pages/preferences.vue` | Toggle push |
+| 9.9 | Track delivery status | `apps/scrapers/src/lib/webPush.ts` | Delivery logging |
+| 9.10 | Test push flow | `apps/scrapers/test/lib/webPush.spec.ts` | Push tests |
+
+---
+
+## Action 10: Add Content Moderation Pipeline (Confidence: 84%)
+
+**Research Date**: 2025-12-27
+**Documentation Validated**: Yes - Cloudflare AI Gateway moderation
+
+### Why This Matters
+- No content filtering currently
+- Risk of harmful content in briefs
+- Essential for public deployment
+- Compliance with platform policies
+
+### Atomic Subtasks
+
+| # | Task | Files (≤5) | Description |
+|---|------|------------|-------------|
+| 10.1 | Create moderation service | `apps/scrapers/src/lib/moderation.ts` | Content check |
+| 10.2 | Integrate AI Gateway | `apps/scrapers/src/lib/moderation.ts` | Cloudflare AI |
+| 10.3 | Add moderation to processing | `apps/scrapers/src/workflows/processArticles.workflow.ts` | Flag content |
+| 10.4 | Create moderation queue | `apps/frontend/src/pages/admin/moderation.vue` | Review UI |
+| 10.5 | Add moderation columns | `packages/database/src/schema.ts` | flagged, reason |
+| 10.6 | Generate migration | `packages/database/migrations/` | Moderation columns |
+| 10.7 | Implement human review | `apps/scrapers/src/routers/moderation.router.ts` | Approve/reject |
+| 10.8 | Add auto-block rules | `apps/scrapers/src/lib/moderation.ts` | Keyword blocklist |
+| 10.9 | Create moderation metrics | `apps/frontend/src/pages/admin/index.vue` | Flag rate |
+| 10.10 | Test moderation | `apps/scrapers/test/lib/moderation.spec.ts` | Moderation tests |
 
 ---
 
 ## Cognitive Empathy Analysis
 
-### User Perspective
-- **Wants**: Real-time updates, personalized content, reliable delivery
-- **Pain Points**: No visibility into processing, generic briefs
-- **Priorities**: Action 6 (WebSockets), Action 7 (Preferences), Action 8 (Delivery)
+### User Perspective (Updated)
+- **Wants**: Personalized content, fast search, push notifications
+- **Pain Points**: Generic briefs, no search, email-only
+- **Priorities**: Action 3 (Preferences), Action 6 (Search), Action 9 (Push)
 
-### Developer Perspective
-- **Wants**: Good testing, observability, clear architecture
-- **Pain Points**: Limited visibility into production issues
-- **Priorities**: Action 1 (Tracing), Action 2 (Vitest 4), Action 4 (E2E)
+### Developer Perspective (Updated)
+- **Wants**: Better testing, agent capabilities, monitoring
+- **Pain Points**: Limited browser testing, no agents
+- **Priorities**: Action 1 (Agents), Action 2 (Vitest 4), Action 4 (Health)
 
-### Operations Perspective
-- **Wants**: Monitoring, caching, performance metrics
-- **Pain Points**: Database load, no tracing
-- **Priorities**: Action 1 (Tracing), Action 5 (Caching), Action 9 (Analytics)
-
----
-
-## Alternative Approaches (Confidence < 85%)
-
-### For Action 6 (WebSocket - 85%)
-**Alternative**: Server-Sent Events (SSE)
-- Pros: Simpler, no Durable Object needed
-- Cons: Unidirectional, less efficient for bidirectional
-
-### For Action 7 (Preferences - 82%)
-**Alternative**: Cookie-based preferences only
-- Pros: No database changes, simpler
-- Cons: Not synced across devices
-
-### For Action 10 (i18n - 80%)
-**Alternative**: Machine translation with Gemini
-- Pros: Automatic, covers all content
-- Cons: Quality varies, costs per translation
+### Operations Perspective (Updated)
+- **Wants**: Source reliability, deduplication, moderation
+- **Pain Points**: Silent failures, duplicate processing
+- **Priorities**: Action 4 (Health), Action 5 (Dedup), Action 10 (Moderation)
 
 ---
 
 ## Sources
 
-- [Cloudflare Workers Tracing](https://blog.cloudflare.com/workers-tracing-now-in-open-beta/)
-- [Grafana Cloud Integration](https://grafana.com/blog/2025/12/04/send-opentelemetry-traces-and-logs-from-cloudflare-workers-to-grafana-cloud/)
-- [Vitest 4.0 Release](https://www.infoq.com/news/2025/12/vitest-4-browser-mode/)
 - [Cloudflare Agents SDK v0.3.0](https://developers.cloudflare.com/changelog/2025-12-22-agents-sdk-ai-sdk-v6/)
-- [Drizzle ORM v1 Beta](https://orm.drizzle.team/docs/latest-releases)
-- [Nuxt 4.0 Announcement](https://nuxt.com/blog/v4)
+- [Vitest 4.0 Release](https://www.infoq.com/news/2025/12/vitest-4-browser-mode/)
+- [Cloudflare Vectorize](https://developers.cloudflare.com/vectorize/)
+- [Cloudflare AI Gateway](https://developers.cloudflare.com/ai-gateway/)
+- [Web Push API](https://developer.mozilla.org/en-US/docs/Web/API/Push_API)

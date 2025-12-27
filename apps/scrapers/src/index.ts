@@ -4,7 +4,10 @@ export type Env = {
   // Bindings
   SCRAPE_RSS_FEED: Workflow;
   PROCESS_ARTICLES: Workflow;
+  SEND_NEWSLETTER?: Workflow;
   BROWSER: Fetcher;
+  CACHE_KV?: KVNamespace;
+  STATS_ROOM?: DurableObjectNamespace;
 
   // Secrets
   CLOUDFLARE_BROWSER_RENDERING_API_TOKEN: string;
@@ -43,8 +46,19 @@ export default {
       console.log('Starting RSS feed scraping...');
       return;
     }
+
+    // - Daily at 08:00 UTC: send newsletter
+    if (cron === '0 8 * * *') {
+      if (env.SEND_NEWSLETTER) {
+        await env.SEND_NEWSLETTER.create({ id: crypto.randomUUID() });
+        console.log('Starting newsletter delivery...');
+      }
+      return;
+    }
   },
 } satisfies ExportedHandler<Env>;
 
 export { ScrapeRssFeed } from './workflows/rssFeed.workflow';
 export { ProcessArticles } from './workflows/processArticles.workflow';
+export { SendNewsletter } from './workflows/newsletter.workflow';
+export { StatsRoom } from './durable/StatsRoom';

@@ -1,0 +1,77 @@
+{
+  "common": {
+    "loading": "Chargement...",
+    "error": "Une erreur s'est produite",
+    "retry": "Réessayer",
+    "refresh": "Actualiser",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "close": "Fermer",
+    "back": "Retour",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "search": "Rechercher",
+    "notFound": "Non trouvé"
+  },
+  "nav": {
+    "home": "Accueil",
+    "briefs": "Rapports",
+    "admin": "Admin",
+    "settings": "Paramètres",
+    "about": "À propos"
+  },
+  "home": {
+    "title": "Meridian",
+    "subtitle": "Rapports de Renseignement par IA",
+    "description": "Obtenez des rapports de renseignement de niveau présidentiel, construits avec l'IA",
+    "latestBrief": "Dernier Rapport",
+    "viewAllBriefs": "Voir Tous les Rapports",
+    "subscribe": "S'abonner aux Rapports Quotidiens"
+  },
+  "briefs": {
+    "title": "Rapports de Renseignement",
+    "noBriefs": "Aucun rapport disponible pour le moment",
+    "readMore": "Lire la Suite",
+    "publishedOn": "Publié le",
+    "articlesAnalyzed": "articles analysés",
+    "generatedBy": "Généré par"
+  },
+  "admin": {
+    "title": "Tableau de Bord Admin",
+    "subtitle": "Tableau de Renseignement",
+    "refresh": "Actualiser",
+    "latestBrief": "Dernier Rapport",
+    "stats": {
+      "sources": "Sources",
+      "totalArticles": "Articles Totaux",
+      "scraped24h": "Collectés (24h)",
+      "processed24h": "Traités (24h)",
+      "pending": "En Attente",
+      "failed": "Échoués"
+    },
+    "recentBriefs": "Rapports Récents",
+    "aiModels": "Modèles IA (Déc 2025)",
+    "topSources": "Meilleures Sources (7 jours)",
+    "contentAnalysis": "Analyse de Contenu (7 jours)",
+    "systemOperational": "Système Opérationnel"
+  },
+  "newsletter": {
+    "title": "Restez Informé",
+    "description": "Abonnez-vous pour recevoir des rapports quotidiens",
+    "emailPlaceholder": "Entrez votre email",
+    "subscribe": "S'abonner",
+    "success": "Inscription réussie !",
+    "error": "L'inscription a échoué. Veuillez réessayer."
+  },
+  "footer": {
+    "copyright": "Système de Renseignement Meridian",
+    "privacy": "Confidentialité",
+    "terms": "Conditions",
+    "contact": "Contact"
+  },
+  "dates": {
+    "today": "Aujourd'hui",
+    "yesterday": "Hier",
+    "daysAgo": "il y a {count} jours"
+  }
+}

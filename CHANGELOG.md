@@ -4,6 +4,55 @@ All notable changes to the Meridian project are documented here with ISO 8601 ti
 
 ---
 
+## [2025-12-27T14:00:00Z] Second Roadmap Implementation - Infrastructure & UX
+
+### Changes Made
+- **Tracing**: Added OpenTelemetry tracing utilities for observability
+- **Caching**: Implemented KV caching layer with TTL support
+- **Newsletter**: Created newsletter workflow for daily brief delivery
+- **WebSocket**: Added real-time updates via Durable Objects
+- **Analytics**: Created time-series analytics endpoint and chart components
+- **E2E Testing**: Added Playwright configuration and test suites
+- **i18n**: Implemented multi-language support (EN, ES, FR)
+
+### Files Created
+- `apps/scrapers/src/lib/tracing.ts` - OpenTelemetry utilities
+- `apps/scrapers/src/lib/cache.ts` - KV caching with TTL
+- `apps/scrapers/src/workflows/newsletter.workflow.ts` - Newsletter delivery
+- `apps/scrapers/src/durable/StatsRoom.ts` - WebSocket Durable Object
+- `apps/scrapers/test/lib/tracing.spec.ts` - Tracing tests
+- `apps/scrapers/test/lib/cache.spec.ts` - Cache tests
+- `apps/frontend/src/composables/useWebSocket.ts` - WebSocket composable
+- `apps/frontend/src/server/api/analytics/timeseries.get.ts` - Analytics API
+- `apps/frontend/src/components/charts/ArticleChart.vue` - Article chart
+- `apps/frontend/src/components/charts/SourcePerformanceChart.vue` - Source chart
+- `apps/frontend/src/components/ConnectionStatus.vue` - Connection indicator
+- `apps/frontend/src/components/LanguageSwitcher.vue` - Language selector
+- `apps/frontend/playwright.config.ts` - Playwright configuration
+- `apps/frontend/e2e/home.spec.ts` - Home page tests
+- `apps/frontend/e2e/admin.spec.ts` - Admin dashboard tests
+- `apps/frontend/e2e/briefs.spec.ts` - Briefs page tests
+- `apps/frontend/src/locales/en.json` - English translations
+- `apps/frontend/src/locales/es.json` - Spanish translations
+- `apps/frontend/src/locales/fr.json` - French translations
+
+### Files Modified
+- `apps/scrapers/wrangler.toml` - Added KV, newsletter workflow, DO bindings
+- `apps/scrapers/src/index.ts` - Added CACHE_KV, STATS_ROOM, newsletter cron
+- `apps/frontend/package.json` - Added chart.js, i18n, Playwright
+- `apps/frontend/nuxt.config.ts` - Added i18n configuration
+
+### Confidence Scores
+- OpenTelemetry Tracing: 94%
+- KV Caching Layer: 89%
+- Newsletter Workflow: 88%
+- WebSocket Updates: 85%
+- Analytics Dashboard: 86%
+- E2E Testing: 93%
+- Multi-language Support: 80%
+
+---
+
 ## [2025-12-27T12:00:00Z] Initial Roadmap Implementation
 
 ### Changes Made
