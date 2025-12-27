@@ -5,19 +5,45 @@ import { Hono } from 'hono';
 import { trimTrailingSlash } from 'hono/trailing-slash';
 import openGraph from './routers/openGraph.router';
 import reportsRouter from './routers/reports.router';
+import { SECURITY_HEADERS, checkAuthRateLimit, recordFailedAuth, isValidDateFormat } from './lib/security';
 
 export type HonoEnv = { Bindings: Env };
 
 const app = new Hono<HonoEnv>()
+  // Add security headers to all responses
+  .use('*', async (c, next) => {
+    await next();
+    for (const [key, value] of Object.entries(SECURITY_HEADERS)) {
+      c.res.headers.set(key, value);
+    }
+  })
+  // Global error handler
+  .onError((err, c) => {
+    console.error('[Error]', err.message);
+    return c.json({ error: 'Internal server error' }, 500);
+  })
   .use(trimTrailingSlash())
   .get('/favicon.ico', async c => c.notFound()) // disable favicon
   .route('/reports', reportsRouter)
   .route('/openGraph', openGraph)
   .get('/ping', async c => c.json({ pong: true }))
   .get('/events', async c => {
+    // Get client IP for rate limiting
+    const clientIp = c.req.header('cf-connecting-ip') || c.req.header('x-forwarded-for') || 'unknown';
+
+    // Check rate limit before auth
+    const rateCheck = checkAuthRateLimit(clientIp);
+    if (!rateCheck.allowed) {
+      return c.json(
+        { error: 'Too many requests. Please try again later.' },
+        { status: 429, headers: { 'Retry-After': String(rateCheck.retryAfter) } }
+      );
+    }
+
     // require bearer auth token
     const hasValidToken = hasValidAuthToken(c);
     if (!hasValidToken) {
+      recordFailedAuth(clientIp);
       return c.json({ error: 'Unauthorized' }, 401);
     }
 
@@ -26,13 +52,13 @@ const app = new Hono<HonoEnv>()
 
     let endDate: Date;
     if (dateParam) {
+      // Validate date format strictly
+      if (!isValidDateFormat(dateParam)) {
+        return c.json({ error: 'Invalid date format. Please use YYYY-MM-DD' }, 400);
+      }
       // Parse the date parameter explicitly with UTC
       // Append T07:00:00Z to ensure it's 7am UTC
       endDate = new Date(`${dateParam}T07:00:00Z`);
-      // Check if date is valid
-      if (isNaN(endDate.getTime())) {
-        return c.json({ error: 'Invalid date format. Please use yyyy-mm-dd' }, 400);
-      }
     } else {
       // Use current date if no date parameter was provided
       endDate = new Date();

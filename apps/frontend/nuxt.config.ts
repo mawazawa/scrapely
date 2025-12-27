@@ -12,6 +12,13 @@ export default defineNuxtConfig({
           href: '/favicon.ico',
         },
       ],
+      // Security headers via meta tags
+      meta: [
+        { 'http-equiv': 'X-Content-Type-Options', content: 'nosniff' },
+        { 'http-equiv': 'X-Frame-Options', content: 'DENY' },
+        { 'http-equiv': 'X-XSS-Protection', content: '1; mode=block' },
+        { name: 'referrer', content: 'strict-origin-when-cross-origin' },
+      ],
     },
   },
 
@@ -39,6 +46,18 @@ export default defineNuxtConfig({
   nitro: {
     prerender: {
       autoSubfolderIndex: false,
+    },
+    // Security headers for server responses
+    routeRules: {
+      '/**': {
+        headers: {
+          'X-Content-Type-Options': 'nosniff',
+          'X-Frame-Options': 'DENY',
+          'X-XSS-Protection': '1; mode=block',
+          'Referrer-Policy': 'strict-origin-when-cross-origin',
+          'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
+        },
+      },
     },
   },
 });

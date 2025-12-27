@@ -4,6 +4,7 @@ export type Env = {
   // Bindings
   SCRAPE_RSS_FEED: Workflow;
   PROCESS_ARTICLES: Workflow;
+  BROWSER: Fetcher;
 
   // Secrets
   CLOUDFLARE_BROWSER_RENDERING_API_TOKEN: string;
@@ -26,6 +27,9 @@ export type Env = {
 
   // Firecrawl (AI scraping)
   FIRECRAWL_API_KEY?: string;
+
+  // Email (Resend)
+  RESEND_API_KEY?: string;
 
   MERIDIAN_SECRET_KEY: string;
 };

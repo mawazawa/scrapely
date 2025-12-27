@@ -1,4 +1,4 @@
-import { $articles, $sources, $reports, sql, gte, eq, isNotNull, isNull } from '@meridian/database';
+import { $articles, $sources, $reports, sql, gte, eq, isNotNull, isNull, and, desc, count } from '@meridian/database';
 import { getDb } from '@meridian/database';
 
 export default defineEventHandler(async (event) => {
@@ -39,11 +39,11 @@ export default defineEventHandler(async (event) => {
       .from($articles)
       .where(gte($articles.processedAt, last24h)),
 
-    // Pending articles (not processed, no fail reason)
+    // Pending articles (not processed, no fail reason) - using parameterized query
     db
       .select({ count: sql<number>`count(*)` })
       .from($articles)
-      .where(sql`${$articles.processedAt} IS NULL AND ${$articles.failReason} IS NULL`),
+      .where(and(isNull($articles.processedAt), isNull($articles.failReason))),
 
     // Failed articles
     db
@@ -51,7 +51,7 @@ export default defineEventHandler(async (event) => {
       .from($articles)
       .where(isNotNull($articles.failReason)),
 
-    // Recent reports
+    // Recent reports - using desc() instead of raw SQL
     db
       .select({
         id: $reports.id,
@@ -60,7 +60,7 @@ export default defineEventHandler(async (event) => {
         totalArticles: $reports.totalArticles,
       })
       .from($reports)
-      .orderBy(sql`${$reports.createdAt} DESC`)
+      .orderBy(desc($reports.createdAt))
       .limit(5),
 
     // Articles by source (top 10)

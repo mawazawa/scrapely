@@ -3,6 +3,7 @@ import { ImageResponse } from 'workers-og';
 import { z } from 'zod';
 import { zValidator } from '@hono/zod-validator';
 import type { HonoEnv } from '../app';
+import { escapeHtml } from '../lib/security';
 
 const getBriefOpenGraph = (opts: { title: string; date: Date; totalArticles: number; totalSources: number }) =>
   `
@@ -51,7 +52,7 @@ const getBriefOpenGraph = (opts: { title: string; date: Date; totalArticles: num
         line-height: 1.4;
       "
     >
-      ${decodeURIComponent(opts.title.trim())}
+      ${escapeHtml(decodeURIComponent(opts.title.trim()))}
     </div>
   </div>
 </div>`;

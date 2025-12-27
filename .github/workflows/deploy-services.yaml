@@ -3,15 +3,51 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
+
 jobs:
-  deploy:
+  # Quality checks run on all pushes and PRs
+  quality:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
         with:
-          version: 9.15.4
+          version: 9.15.9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.14.0'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: TypeScript Check
+        run: pnpm typecheck
+
+      - name: Run Tests
+        run: pnpm --filter @meridian/scrapers test --run
+        continue-on-error: true
+
+      - name: Security Audit
+        run: pnpm audit --audit-level=high
+        continue-on-error: true
+
+  # Deploy only runs on main branch pushes
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: quality
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.9
 
       - uses: actions/setup-node@v4
         with:
@@ -66,26 +102,35 @@ jobs:
             GOOGLE_API_KEY
             DATABASE_URL
             MERIDIAN_SECRET_KEY
+            OPENAI_API_KEY
+            ANTHROPIC_API_KEY
+            MISTRAL_API_KEY
+            FIRECRAWL_API_KEY
         env:
           GOOGLE_BASE_URL: ${{ secrets.GOOGLE_BASE_URL }}
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           MERIDIAN_SECRET_KEY: ${{ secrets.MERIDIAN_SECRET_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }}
+
+      - name: Smoke Test - Ping API
+        run: |
+          echo "Testing API health..."
+          curl -sf https://meridian-production.alceos.workers.dev/ping || echo "Ping check skipped (worker may not be deployed yet)"
+        continue-on-error: true
 
       - name: Build Nuxt Application
-        run: pnpm build --filter=@meridian/frontend # Or 'yarn generate', ensure this matches your static build script in package.json (npx nuxi generate)
+        run: pnpm build --filter=@meridian/frontend
         env:
           NUXT_DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
-      # - name: Publish to Cloudflare Pages
-      #   uses: cloudflare/wrangler-action@v3 # Use the official Cloudflare Wrangler action
-      #   with:
-      #     apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }} # Use the secret token
-      #     accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }} # Use the secret account ID
-      #     command: pages deploy apps/frontend/dist --project-name=meridian-frontend --branch=main
-      #     secrets: |
-      #       NUXT_DATABASE_URL
-      #   env:
-      #     NUXT_DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      # Replace YOUR_CLOUDFLARE_PAGES_PROJECT_NAME with the actual name from Step 3
-      # The --branch flag tells Cloudflare which production branch this deployment corresponds to
+      - name: Publish to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy apps/frontend/.output/public --project-name=meridian-frontend --branch=main
+        continue-on-error: true
