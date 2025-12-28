@@ -14,6 +14,18 @@ binding = "CACHE_KV"
 id = "meridian-cache"
 preview_id = "meridian-cache-preview"
 
+# KV namespace for court sessions
+[[kv_namespaces]]
+binding = "COURT_SESSIONS"
+id = "court-sessions"
+preview_id = "court-sessions-preview"
+
+# R2 bucket for court documents
+[[r2_buckets]]
+binding = "COURT_DOCS"
+bucket_name = "court-documents"
+preview_bucket_name = "court-documents-preview"
+
 [[workflows]]
 name = "meridian_scrape_rss_feed"
 binding = "SCRAPE_RSS_FEED"

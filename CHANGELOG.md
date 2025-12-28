@@ -4,6 +4,63 @@ All notable changes to the Meridian project are documented here with ISO 8601 ti
 
 ---
 
+## [2025-12-28T18:00:00Z] Court Data Platform - Phase 2 Complete (All 10 Actions)
+
+### Changes Made
+- **Court Document Storage (R2)**: Full document storage with versioning, OCR, compression, presigned URLs
+- **Case Update Alert System**: Multi-channel alerts (email, push, webhook) with batching and quiet hours
+- **Court Data Search**: PostgreSQL full-text search across cases, rulings, parties, documents
+- **Public Court Data API**: RESTful API with API key auth, rate limiting, tier-based permissions
+
+### Files Created
+
+**Document Storage:**
+- `apps/scrapers/src/court/storage/DocumentStorage.ts` - Main storage service
+- `apps/scrapers/src/court/storage/keys.ts` - Storage key generation
+- `apps/scrapers/src/court/storage/metadata.ts` - Document metadata handling
+- `apps/scrapers/src/court/storage/versioning.ts` - Version management
+- `apps/scrapers/src/court/storage/compression.ts` - Gzip compression
+- `apps/scrapers/src/court/storage/ocr.ts` - OCR integration
+- `apps/scrapers/src/court/storage/presign.ts` - Presigned URL generation
+- `apps/scrapers/src/court/storage/lifecycle.ts` - Lifecycle rules
+- `apps/scrapers/src/court/storage/usage.ts` - Usage tracking
+- `apps/scrapers/src/routes/documents.router.ts` - Document REST API
+
+**Alert System:**
+- `apps/scrapers/src/court/alerts/AlertService.ts` - Main alert service
+- `apps/scrapers/src/court/alerts/types.ts` - Alert type definitions
+- `apps/scrapers/src/court/alerts/quietHours.ts` - Quiet hours management
+- `apps/scrapers/src/court/alerts/batching.ts` - Alert batching/digest
+- `apps/scrapers/src/court/alerts/email.ts` - Email delivery
+- `apps/scrapers/src/court/alerts/push.ts` - Push notifications
+- `apps/scrapers/src/court/alerts/webhook.ts` - Webhook delivery
+- `apps/scrapers/src/court/alerts/templates/email.ts` - Email templates
+- `apps/scrapers/src/routes/alerts.router.ts` - Alerts REST API
+
+**Search Infrastructure:**
+- `apps/scrapers/src/court/search/SearchService.ts` - Unified search service
+- `apps/scrapers/src/routes/search.router.ts` - Search REST API
+
+**Public API:**
+- `apps/scrapers/src/court/api/apiKeys.ts` - API key management
+- `apps/scrapers/src/court/api/rateLimit.ts` - Rate limiting
+- `apps/scrapers/src/routes/courtApi.router.ts` - Public API endpoints
+
+**Frontend:**
+- `apps/frontend/src/components/DocumentViewer.vue` - PDF viewer with OCR
+
+### Files Modified
+- `apps/scrapers/wrangler.toml` - Added R2 bucket and KV namespace bindings
+- `apps/scrapers/src/court/index.ts` - Added storage, alerts, search, api exports
+
+### Confidence Scores
+- Document Storage: 90%
+- Alert System: 78%
+- Search Infrastructure: 85%
+- Public API: 75%
+
+---
+
 ## [2025-12-28T12:00:00Z] Court Data Platform - Phase 1 Implementation
 
 ### Changes Made
