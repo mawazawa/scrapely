@@ -4,6 +4,78 @@ All notable changes to the Meridian project are documented here with ISO 8601 ti
 
 ---
 
+## [2025-12-28T12:00:00Z] Court Data Platform - Phase 1 Implementation
+
+### Changes Made
+- **Apify + Crawlee Integration**: Full Crawlee 3.15.3 integration with Camoufox for Cloudflare bypass
+- **SF Court Scraper**: Complete scraper for SF Superior Court with case lookup, tentative rulings, calendar
+- **Court Data Schema**: 12 new database tables for courts, cases, parties, attorneys, rulings, documents
+- **Session Management**: Persistent session handling with KV storage for Cloudflare cookies
+- **Rate Limiting**: Court-specific rate limiting (1 req/min for SF Court)
+- **Health Monitoring**: Comprehensive health checks for scraper status
+
+### Files Created
+**Court Infrastructure:**
+- `apps/scrapers/src/court/types.ts` - Type definitions for court data
+- `apps/scrapers/src/court/errors.ts` - Custom error classes with codes
+- `apps/scrapers/src/court/crawlee.config.ts` - Crawlee configuration
+- `apps/scrapers/src/court/camoufox.ts` - Stealth Firefox browser launcher
+- `apps/scrapers/src/court/cloudflare.ts` - Cloudflare challenge handler
+- `apps/scrapers/src/court/apifyClient.ts` - Apify API wrapper
+- `apps/scrapers/src/court/proxy.ts` - Residential proxy management
+- `apps/scrapers/src/court/rateLimit.ts` - Court-specific rate limiting
+- `apps/scrapers/src/court/BaseCrawler.ts` - Abstract base crawler class
+- `apps/scrapers/src/court/CrawlerFactory.ts` - Crawler factory pattern
+- `apps/scrapers/src/court/index.ts` - Module exports
+
+**SF Court Scraper:**
+- `apps/scrapers/src/court/sfCourt/SFCourtScraper.ts` - Main SF Court scraper
+- `apps/scrapers/src/court/sfCourt/urls.ts` - SF Court URL endpoints
+- `apps/scrapers/src/court/sfCourt/selectors.ts` - CSS selectors for parsing
+- `apps/scrapers/src/court/sfCourt/caseNumber.ts` - Case number validation
+- `apps/scrapers/src/court/sfCourt/tentativeRulings.ts` - Ruling parser
+- `apps/scrapers/src/court/sfCourt/session.ts` - Session management
+- `apps/scrapers/src/court/sfCourt/health.ts` - Health checks
+- `apps/scrapers/src/court/sfCourt/index.ts` - SF Court exports
+
+**Database:**
+- `packages/database/src/queries/court.ts` - Court data query helpers
+
+**Tests:**
+- `apps/scrapers/test/court/cloudflare.spec.ts` - Cloudflare bypass tests
+
+**Configuration:**
+- `apps/scrapers/.dev.vars.example` - Environment variable documentation
+
+### Files Modified
+- `apps/scrapers/package.json` - Added Crawlee, Camoufox, Apify dependencies
+- `packages/database/src/schema.ts` - Added 12 court data tables
+
+### Database Tables Added
+- `courts` - Registry of supported courts
+- `cases` - Court case records
+- `case_parties` - Plaintiffs, defendants, etc.
+- `attorneys` - Attorney records
+- `case_attorneys` - Case-attorney relationships
+- `rulings` - Tentative and final rulings
+- `case_documents` - Filed documents
+- `case_events` - Calendar events and hearings
+- `case_tracking` - User case tracking
+- `case_snapshots` - Change detection snapshots
+- `case_notes` - User annotations
+- `court_alert_history` - Alert delivery history
+- `court_api_keys` - API key management
+
+### Confidence Scores
+- Apify + Crawlee Integration: 92%
+- SF Court Scraper: 88%
+- Court Data Schema: 95%
+- Cloudflare Bypass: 85%
+- Session Management: 90%
+- Rate Limiting: 94%
+
+---
+
 ## [2025-12-27T20:00:00Z] Fifth Roadmap Implementation - Enterprise Features
 
 ### Changes Made

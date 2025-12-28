@@ -1,0 +1,76 @@
+# Meridian Scrapers - Environment Variables
+# Copy this file to .dev.vars.local and fill in your values
+
+# =============================================================================
+# Required: Database Configuration
+# =============================================================================
+DATABASE_URL="postgresql://user:password@localhost:5432/meridian"
+
+# =============================================================================
+# Required: Application Secret
+# =============================================================================
+SECRET_KEY="your-secret-key-here"
+
+# =============================================================================
+# AI Model API Keys
+# =============================================================================
+# Google AI (Gemini) - Primary model for article analysis
+GOOGLE_API_KEY=""
+GOOGLE_BASE_URL="https://generativelanguage.googleapis.com/v1beta"
+
+# OpenAI (GPT-5.2) - For brief synthesis
+OPENAI_API_KEY=""
+
+# Anthropic (Claude) - Fallback
+ANTHROPIC_API_KEY=""
+
+# Mistral - For OCR and fallback
+MISTRAL_API_KEY=""
+
+# =============================================================================
+# Firecrawl - AI Scraping for Complex Sites
+# =============================================================================
+FIRECRAWL_API_KEY=""
+
+# =============================================================================
+# Court Scraping - Apify Integration
+# =============================================================================
+# Apify API token for cloud scraping
+APIFY_TOKEN=""
+
+# =============================================================================
+# Court Scraping - Proxy Configuration
+# =============================================================================
+# Residential proxy for bypassing Cloudflare
+# Supported providers: brightdata, smartproxy, oxylabs, custom
+PROXY_PROVIDER="brightdata"
+PROXY_USERNAME=""
+PROXY_PASSWORD=""
+
+# Optional: Override default proxy host/port
+PROXY_HOST=""
+PROXY_PORT=""
+
+# =============================================================================
+# Cloudflare Configuration
+# =============================================================================
+CLOUDFLARE_ACCOUNT_ID=""
+CLOUDFLARE_API_TOKEN=""
+
+# =============================================================================
+# Email (for alerts and notifications)
+# =============================================================================
+RESEND_API_KEY=""
+EMAIL_FROM="alerts@meridian.news"
+
+# =============================================================================
+# Push Notifications
+# =============================================================================
+VAPID_PUBLIC_KEY=""
+VAPID_PRIVATE_KEY=""
+
+# =============================================================================
+# Analytics
+# =============================================================================
+POSTHOG_API_KEY=""
+POSTHOG_HOST="https://app.posthog.com"

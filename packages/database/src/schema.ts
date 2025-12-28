@@ -178,3 +178,245 @@ export const $briefSchedules = pgTable('brief_schedules', {
   config: jsonb('config'), // Additional config like topics, sources to include
   createdAt: timestamp('created_at', { mode: 'date' }).default(sql`CURRENT_TIMESTAMP`),
 });
+
+// =============================================================================
+// COURT DATA TABLES
+// =============================================================================
+
+/**
+ * Courts - Registry of supported courts
+ */
+export const $courts = pgTable('courts', {
+  id: text('id').primaryKey(), // e.g., 'sf-superior', 'la-superior'
+  name: text('name').notNull(),
+  county: text('county').notNull(),
+  state: text('state').notNull().default('CA'),
+  type: text('type').notNull(), // 'superior', 'appellate', 'supreme', 'federal'
+  baseUrl: text('base_url').notNull(),
+  timezone: text('timezone').default('America/Los_Angeles'),
+  enabled: boolean('enabled').default(true),
+  lastScrapedAt: timestamp('last_scraped_at', { mode: 'date' }),
+  createdAt: timestamp('created_at', { mode: 'date' }).default(sql`CURRENT_TIMESTAMP`),
+});
+
+/**
+ * Cases - Court case records
+ */
+export const $cases = pgTable('cases', {
+  id: serial('id').primaryKey(),
+  caseNumber: text('case_number').notNull(),
+  courtId: text('court_id')
+    .references(() => $courts.id)
+    .notNull(),
+  title: text('title').notNull(),
+  caseType: text('case_type').notNull(), // 'civil', 'family', 'criminal', 'probate', etc.
+  caseSubType: text('case_sub_type'),
+  status: text('status').notNull().default('open'), // 'open', 'closed', 'pending', 'disposed'
+  filedDate: timestamp('filed_date', { mode: 'date' }),
+  dispositionDate: timestamp('disposition_date', { mode: 'date' }),
+  department: text('department'),
+  judge: text('judge'),
+  lastUpdated: timestamp('last_updated', { mode: 'date' }),
+  lastScrapedAt: timestamp('last_scraped_at', { mode: 'date' }),
+  sourceUrl: text('source_url'),
+  rawData: jsonb('raw_data'),
+  createdAt: timestamp('created_at', { mode: 'date' }).default(sql`CURRENT_TIMESTAMP`),
+});
+
+/**
+ * Case parties - Plaintiffs, defendants, etc.
+ */
+export const $caseParties = pgTable('case_parties', {
+  id: serial('id').primaryKey(),
+  caseId: integer('case_id')
+    .references(() => $cases.id, { onDelete: 'cascade' })
+    .notNull(),
+  name: text('name').notNull(),
+  type: text('type').notNull(), // 'plaintiff', 'defendant', 'petitioner', 'respondent'
+  isLead: boolean('is_lead').default(false),
+  entityType: text('entity_type'), // 'individual', 'corporation', 'government'
+  metadata: jsonb('metadata'),
+  createdAt: timestamp('created_at', { mode: 'date' }).default(sql`CURRENT_TIMESTAMP`),
+});
+
+/**
+ * Attorneys on cases
+ */
+export const $attorneys = pgTable('attorneys', {
+  id: serial('id').primaryKey(),
+  name: text('name').notNull(),
+  barNumber: text('bar_number'),
+  firm: text('firm'),
+  phone: text('phone'),
+  email: text('email'),
+  address: text('address'),
+  createdAt: timestamp('created_at', { mode: 'date' }).default(sql`CURRENT_TIMESTAMP`),
+});
+
+/**
+ * Case-attorney relationships
+ */
+export const $caseAttorneys = pgTable('case_attorneys', {
+  id: serial('id').primaryKey(),
+  caseId: integer('case_id')
+    .references(() => $cases.id, { onDelete: 'cascade' })
+    .notNull(),
+  attorneyId: integer('attorney_id')
+    .references(() => $attorneys.id)
+    .notNull(),
+  partyId: integer('party_id')
+    .references(() => $caseParties.id),
+  isLeadCounsel: boolean('is_lead_counsel').default(false),
+  role: text('role'), // 'attorney', 'co-counsel', 'of counsel'
+  createdAt: timestamp('created_at', { mode: 'date' }).default(sql`CURRENT_TIMESTAMP`),
+});
+
+/**
+ * Court rulings (tentative and final)
+ */
+export const $rulings = pgTable('rulings', {
+  id: serial('id').primaryKey(),
+  caseId: integer('case_id')
+    .references(() => $cases.id, { onDelete: 'cascade' })
+    .notNull(),
+  rulingDate: timestamp('ruling_date', { mode: 'date' }).notNull(),
+  hearingDate: timestamp('hearing_date', { mode: 'date' }),
+  department: text('department').notNull(),
+  judge: text('judge'),
+  motionType: text('motion_type').notNull(),
+  rulingType: text('ruling_type').notNull().default('tentative'), // 'tentative', 'final'
+  outcome: text('outcome').notNull(), // 'granted', 'denied', 'continued', 'moot', etc.
+  text: text('text').notNull(),
+  movingParty: text('moving_party'),
+  respondingParty: text('responding_party'),
+  sourceUrl: text('source_url'),
+  scrapedAt: timestamp('scraped_at', { mode: 'date' }),
+  createdAt: timestamp('created_at', { mode: 'date' }).default(sql`CURRENT_TIMESTAMP`),
+});
+
+/**
+ * Case documents (filings)
+ */
+export const $caseDocuments = pgTable('case_documents', {
+  id: serial('id').primaryKey(),
+  caseId: integer('case_id')
+    .references(() => $cases.id, { onDelete: 'cascade' })
+    .notNull(),
+  title: text('title').notNull(),
+  description: text('description'),
+  documentType: text('document_type').notNull(), // 'complaint', 'motion', 'order', etc.
+  filedDate: timestamp('filed_date', { mode: 'date' }),
+  filedBy: text('filed_by'),
+  pageCount: integer('page_count'),
+  fileSize: integer('file_size'),
+  storageKey: text('storage_key'), // R2 storage key
+  ocrText: text('ocr_text'),
+  sourceUrl: text('source_url'),
+  metadata: jsonb('metadata'),
+  createdAt: timestamp('created_at', { mode: 'date' }).default(sql`CURRENT_TIMESTAMP`),
+});
+
+/**
+ * Case events (calendar, hearings)
+ */
+export const $caseEvents = pgTable('case_events', {
+  id: serial('id').primaryKey(),
+  caseId: integer('case_id')
+    .references(() => $cases.id, { onDelete: 'cascade' })
+    .notNull(),
+  eventType: text('event_type').notNull(), // 'hearing', 'trial', 'conference', 'filing'
+  eventDate: timestamp('event_date', { mode: 'date' }).notNull(),
+  eventTime: text('event_time'),
+  department: text('department'),
+  judge: text('judge'),
+  description: text('description'),
+  result: text('result'),
+  location: text('location'),
+  createdAt: timestamp('created_at', { mode: 'date' }).default(sql`CURRENT_TIMESTAMP`),
+});
+
+/**
+ * User case tracking
+ */
+export const $caseTracking = pgTable('case_tracking', {
+  id: serial('id').primaryKey(),
+  userId: text('user_id').notNull(),
+  caseId: integer('case_id')
+    .references(() => $cases.id, { onDelete: 'cascade' })
+    .notNull(),
+  nickname: text('nickname'), // User's label for the case
+  priority: text('priority').default('normal'), // 'low', 'normal', 'high', 'urgent'
+  notes: text('notes'),
+  alertsEnabled: boolean('alerts_enabled').default(true),
+  lastViewedAt: timestamp('last_viewed_at', { mode: 'date' }),
+  createdAt: timestamp('created_at', { mode: 'date' }).default(sql`CURRENT_TIMESTAMP`),
+});
+
+/**
+ * Case update snapshots (for change detection)
+ */
+export const $caseSnapshots = pgTable('case_snapshots', {
+  id: serial('id').primaryKey(),
+  caseId: integer('case_id')
+    .references(() => $cases.id, { onDelete: 'cascade' })
+    .notNull(),
+  snapshotData: jsonb('snapshot_data').notNull(),
+  hash: text('hash').notNull(),
+  changeType: text('change_type'), // 'new_ruling', 'new_filing', 'status_change', etc.
+  changeDetails: jsonb('change_details'),
+  createdAt: timestamp('created_at', { mode: 'date' }).default(sql`CURRENT_TIMESTAMP`),
+});
+
+/**
+ * Case notes (user annotations)
+ */
+export const $caseNotes = pgTable('case_notes', {
+  id: serial('id').primaryKey(),
+  userId: text('user_id').notNull(),
+  caseId: integer('case_id')
+    .references(() => $cases.id, { onDelete: 'cascade' })
+    .notNull(),
+  title: text('title'),
+  content: text('content').notNull(),
+  isPinned: boolean('is_pinned').default(false),
+  createdAt: timestamp('created_at', { mode: 'date' }).default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp('updated_at', { mode: 'date' }),
+});
+
+/**
+ * Alert history
+ */
+export const $courtAlertHistory = pgTable('court_alert_history', {
+  id: serial('id').primaryKey(),
+  userId: text('user_id').notNull(),
+  caseId: integer('case_id')
+    .references(() => $cases.id),
+  alertType: text('alert_type').notNull(), // 'new_ruling', 'hearing_reminder', 'status_change'
+  title: text('title').notNull(),
+  message: text('message'),
+  channel: text('channel').notNull(), // 'email', 'push', 'webhook'
+  deliveredAt: timestamp('delivered_at', { mode: 'date' }),
+  readAt: timestamp('read_at', { mode: 'date' }),
+  metadata: jsonb('metadata'),
+  createdAt: timestamp('created_at', { mode: 'date' }).default(sql`CURRENT_TIMESTAMP`),
+});
+
+/**
+ * Court API keys
+ */
+export const $courtApiKeys = pgTable('court_api_keys', {
+  id: serial('id').primaryKey(),
+  userId: text('user_id').notNull(),
+  name: text('name').notNull(),
+  key: text('key').notNull().unique(),
+  hashedKey: text('hashed_key').notNull(),
+  prefix: text('prefix').notNull(), // First 8 chars for identification
+  scopes: jsonb('scopes').default([]), // ['read:cases', 'read:rulings', 'search']
+  tier: text('tier').default('free'), // 'free', 'pro', 'enterprise'
+  rateLimit: integer('rate_limit').default(100), // Requests per minute
+  usageCount: integer('usage_count').default(0),
+  lastUsedAt: timestamp('last_used_at', { mode: 'date' }),
+  expiresAt: timestamp('expires_at', { mode: 'date' }),
+  revokedAt: timestamp('revoked_at', { mode: 'date' }),
+  createdAt: timestamp('created_at', { mode: 'date' }).default(sql`CURRENT_TIMESTAMP`),
+});
