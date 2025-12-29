@@ -39,22 +39,40 @@ const DEFAULT_OPTIONS: CamoufoxOptions = {
 /**
  * Launch Camoufox browser
  * Uses camoufox-js for stealth Firefox with anti-detection
+ * See: https://github.com/apify/camoufox-js and https://camoufox.com/
  */
 export async function launchCamoufox(options: CamoufoxOptions = {}): Promise<Browser> {
   const opts = { ...DEFAULT_OPTIONS, ...options };
 
   try {
     // Dynamic import of camoufox-js
-    const { launch } = await import('camoufox-js');
+    // The correct API is Camoufox() function, not launch()
+    const { Camoufox } = await import('camoufox-js');
 
-    const browser = await launch({
-      headless: opts.headless,
-      args: [
-        '--disable-blink-features=AutomationControlled',
-        '--disable-dev-shm-usage',
-      ],
-      proxy: opts.proxy,
-    });
+    // Build Camoufox options - see https://camoufox.com/ for full documentation
+    const camoufoxOptions: Record<string, unknown> = {
+      // Headless mode - 'new' for headless, false for headed
+      headless: opts.headless ? 'new' : false,
+    };
+
+    // Add proxy configuration if specified
+    if (opts.proxy) {
+      camoufoxOptions.proxy = {
+        server: opts.proxy.server,
+        username: opts.proxy.username,
+        password: opts.proxy.password,
+      };
+    }
+
+    // Add locale for fingerprint consistency
+    if (opts.locale) {
+      camoufoxOptions.locale = opts.locale;
+    }
+
+    // Enable humanization features for more realistic behavior
+    camoufoxOptions.humanize = true;
+
+    const browser = await Camoufox(camoufoxOptions);
 
     logger.info('Camoufox browser launched', {
       headless: opts.headless,

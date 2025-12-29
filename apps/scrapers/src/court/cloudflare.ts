@@ -3,12 +3,26 @@
  * Handles Cloudflare Turnstile and other challenge pages
  */
 
-import type { Page, BrowserContext } from 'playwright';
+import type { Page, BrowserContext, Cookie } from 'playwright';
 import { logger } from '../lib/logger';
 import { CloudflareError, CourtScraperError, CourtScraperErrorCode } from './errors';
 import { humanDelay, humanMouseMove } from './camoufox';
 import { TIMEOUTS } from './crawlee.config';
 import type { CloudflareResult } from './types';
+
+/**
+ * Browser cookie type (matches Playwright's Cookie interface)
+ */
+export interface BrowserCookie {
+  name: string;
+  value: string;
+  domain: string;
+  path: string;
+  expires: number;  // Seconds since epoch, -1 for session cookies
+  httpOnly: boolean;
+  secure: boolean;
+  sameSite: 'Strict' | 'Lax' | 'None';
+}
 
 /**
  * Cloudflare challenge detection selectors
@@ -324,8 +338,8 @@ export async function navigateWithCloudflareBypass(
  * Extract Cloudflare cookies for session persistence
  */
 export function extractCloudflareCookies(
-  cookies: Record<string, string>[]
-): Record<string, string>[] {
+  cookies: BrowserCookie[] | Cookie[]
+): BrowserCookie[] {
   const cfCookieNames = [
     'cf_clearance',
     '__cf_bm',
@@ -335,25 +349,28 @@ export function extractCloudflareCookies(
     'cf_chl_rc_ni',
   ];
 
-  return cookies.filter(cookie =>
-    'name' in cookie && cfCookieNames.some(name =>
-      (cookie as unknown as { name: string }).name.startsWith(name)
-    )
+  return (cookies as BrowserCookie[]).filter(cookie =>
+    cookie.name && cfCookieNames.some(name => cookie.name.startsWith(name))
   );
 }
 
 /**
  * Check if Cloudflare cookies are still valid
  */
-export function areCloudflareCookiesValid(cookies: Record<string, string>[]): boolean {
-  const cfClearance = cookies.find(c =>
-    'name' in c && (c as unknown as { name: string }).name === 'cf_clearance'
-  );
+export function areCloudflareCookiesValid(cookies: BrowserCookie[] | Cookie[]): boolean {
+  const cfClearance = (cookies as BrowserCookie[]).find(c => c.name === 'cf_clearance');
 
-  if (!cfClearance || !('expires' in cfClearance)) {
+  if (!cfClearance) {
     return false;
   }
 
-  const expiresAt = (cfClearance as unknown as { expires: number }).expires * 1000;
-  return Date.now() < expiresAt;
+  // Check if cookie has expired
+  // expires is in seconds since epoch, -1 means session cookie
+  if (cfClearance.expires === -1) {
+    return true; // Session cookies are valid until browser closes
+  }
+
+  // Convert expires from seconds to milliseconds for comparison with Date.now()
+  const expiresAtMs = cfClearance.expires * 1000;
+  return Date.now() < expiresAtMs;
 }

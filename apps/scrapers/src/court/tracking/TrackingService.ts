@@ -4,9 +4,21 @@
  */
 
 import { logger } from '../../lib/logger';
+import {
+  getDb,
+  $cases,
+  upsertCase as dbUpsertCase,
+  trackCase as dbTrackCase,
+  createSnapshot as dbCreateSnapshot,
+  getLatestSnapshot,
+  getCaseWithDetails,
+} from '@meridian/database';
+import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+import { eq } from 'drizzle-orm';
 import type { CaseInfo, RulingInfo, ScrapeResult } from '../types';
 import { SFCourtScraper } from '../sfCourt/SFCourtScraper';
 import { createCrawlerFactory, type CrawlerFactory } from '../CrawlerFactory';
+import crypto from 'crypto';
 
 /**
  * Tracked case update
@@ -58,16 +70,16 @@ const DEFAULT_CONFIG: TrackingServiceConfig = {
 export class TrackingService {
   private config: TrackingServiceConfig;
   private crawlerFactory: CrawlerFactory;
-  private db: unknown;  // Database connection
+  private db: PostgresJsDatabase;  // Typed database connection
   private queue: unknown;  // Cloudflare Queue for async processing
 
   constructor(
-    db: unknown,
+    dbUrl: string,
     queue?: unknown,
     config: Partial<TrackingServiceConfig> = {}
   ) {
     this.config = { ...DEFAULT_CONFIG, ...config };
-    this.db = db;
+    this.db = getDb(dbUrl);
     this.queue = queue;
     this.crawlerFactory = createCrawlerFactory();
   }
@@ -332,10 +344,23 @@ export class TrackingService {
     logger.debug('Queued case update', { caseId, priority });
   }
 
-  // Database helper methods (placeholders)
+  // Database helper methods - implemented with actual database queries
   private async upsertCase(caseData: CaseInfo, courtId: string): Promise<number> {
-    // Insert or update case in database
-    return 1;
+    const result = await dbUpsertCase(this.db, {
+      caseNumber: caseData.caseNumber.full,
+      courtId,
+      title: caseData.title,
+      caseType: caseData.caseType,
+      caseSubType: caseData.caseSubType,
+      status: caseData.status,
+      filedDate: caseData.filedDate,
+      dispositionDate: caseData.dispositionDate,
+      department: caseData.department,
+      judge: caseData.judge,
+      lastUpdated: new Date(),
+      lastScrapedAt: new Date(),
+    });
+    return result.case.id;
   }
 
   private async createTracking(
@@ -343,7 +368,7 @@ export class TrackingService {
     caseId: number,
     options?: { nickname?: string; priority?: string }
   ): Promise<void> {
-    // Create tracking record
+    await dbTrackCase(this.db, userId, caseId, options);
   }
 
   private async createSnapshot(
@@ -351,21 +376,47 @@ export class TrackingService {
     data: CaseInfo,
     changeType?: string
   ): Promise<void> {
-    // Create case snapshot
+    // Create a hash of the snapshot data for change detection
+    const snapshotData = JSON.stringify(data);
+    const hash = crypto.createHash('sha256').update(snapshotData).digest('hex');
+
+    await dbCreateSnapshot(this.db, {
+      caseId,
+      snapshotData: data as unknown as Record<string, unknown>,
+      hash,
+      changeType,
+    });
   }
 
   private async getCase(caseId: number): Promise<{ caseNumber: string; courtId: string } | null> {
-    // Get case from database
-    return null;
+    const caseDetails = await getCaseWithDetails(this.db, caseId);
+    if (!caseDetails) return null;
+
+    return {
+      caseNumber: caseDetails.caseNumber,
+      courtId: caseDetails.courtId,
+    };
   }
 
   private async getLastSnapshot(caseId: number): Promise<unknown> {
-    // Get last snapshot
-    return null;
+    const snapshot = await getLatestSnapshot(this.db, caseId);
+    if (!snapshot) return null;
+
+    return snapshot.snapshotData;
   }
 
   private async updateCase(caseId: number, data: CaseInfo): Promise<void> {
-    // Update case record
+    await this.db
+      .update($cases)
+      .set({
+        title: data.title,
+        status: data.status,
+        department: data.department,
+        judge: data.judge,
+        lastUpdated: new Date(),
+        lastScrapedAt: new Date(),
+      })
+      .where(eq($cases.id, caseId));
   }
 }
 
@@ -373,9 +424,9 @@ export class TrackingService {
  * Create tracking service instance
  */
 export function createTrackingService(
-  db: unknown,
+  dbUrl: string,
   queue?: unknown,
   config?: Partial<TrackingServiceConfig>
 ): TrackingService {
-  return new TrackingService(db, queue, config);
+  return new TrackingService(dbUrl, queue, config);
 }

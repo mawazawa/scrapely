@@ -80,32 +80,42 @@ export class SearchService {
     const results: SearchResult[] = [];
     let total = 0;
 
+    // For unified search, we need to fetch enough results from each type
+    // to properly merge and rank them. Don't apply the user's offset to sub-queries.
+    // Instead, fetch limit + offset results from each type to ensure we have enough
+    // for the combined sort to work correctly.
+    const subSearchOptions: SearchOptions = {
+      ...options,
+      limit: limit + offset, // Fetch enough to handle offset after merge
+      offset: 0, // Don't apply offset to individual searches
+    };
+
     // Search each type and merge results
     if (types.includes('case')) {
-      const caseResults = await this.searchCases(options);
+      const caseResults = await this.searchCases(subSearchOptions);
       results.push(...caseResults.results);
       total += caseResults.total;
     }
 
     if (types.includes('ruling')) {
-      const rulingResults = await this.searchRulings(options);
+      const rulingResults = await this.searchRulings(subSearchOptions);
       results.push(...rulingResults.results);
       total += rulingResults.total;
     }
 
     if (types.includes('party')) {
-      const partyResults = await this.searchParties(options);
+      const partyResults = await this.searchParties(subSearchOptions);
       results.push(...partyResults.results);
       total += partyResults.total;
     }
 
     if (types.includes('document')) {
-      const docResults = await this.searchDocuments(options);
+      const docResults = await this.searchDocuments(subSearchOptions);
       results.push(...docResults.results);
       total += docResults.total;
     }
 
-    // Sort by relevance and paginate
+    // Sort all results by relevance and then apply pagination
     const sortedResults = results
       .sort((a, b) => b.relevance - a.relevance)
       .slice(offset, offset + limit);
@@ -116,7 +126,7 @@ export class SearchService {
     return {
       query: options.query,
       results: sortedResults,
-      total,
+      total, // Total is the sum of all matching records across types
       facets,
       took: Date.now() - startTime,
     };

@@ -61,11 +61,20 @@ export class AlertBatcher {
       return { batched: false };
     }
 
-    const batchKey = `${this.prefix}${alert.userId}`;
-
     try {
       // Get or create batch
       let batch = await this.getBatch(alert.userId);
+
+      // If batch exists and is already full, don't add to it
+      // Return false so the alert is sent immediately instead
+      if (batch && batch.alerts.length >= this.config.maxAlertsPerBatch) {
+        logger.debug('Batch is full, alert will be sent immediately', {
+          alertId: alert.id,
+          batchId: batch.id,
+          batchSize: batch.alerts.length,
+        });
+        return { batched: false };
+      }
 
       if (!batch) {
         batch = this.createBatch(alert.userId, prefs);
@@ -74,9 +83,8 @@ export class AlertBatcher {
       // Add alert to batch
       batch.alerts.push(alert);
 
-      // Check if batch is full
+      // Check if batch is now full and mark for sending
       if (batch.alerts.length >= this.config.maxAlertsPerBatch) {
-        // Mark as ready to send
         batch.status = 'pending';
       }
 

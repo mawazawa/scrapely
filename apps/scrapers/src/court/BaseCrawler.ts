@@ -295,13 +295,18 @@ export abstract class BaseCrawler {
       throw new CourtScraperError('Crawler not initialized', CourtScraperErrorCode.INTERNAL_ERROR);
     }
 
-    await this.page.click(selector);
+    // Focus and clear the input field first
+    await this.page.click(selector, { clickCount: 3 }); // Triple-click to select all
+    await humanDelay(50, 150);
+
+    // Clear any existing text
+    await this.page.keyboard.press('Backspace');
     await humanDelay(100, 300);
 
-    // Type with human-like speed
-    for (const char of text) {
-      await this.page.type(selector, char, { delay: 50 + Math.random() * 100 });
-    }
+    // Type the entire text with human-like delay between characters
+    // Playwright's type() handles character-by-character typing with delay
+    const avgDelay = 75; // Average delay between keystrokes (50-100ms range)
+    await this.page.type(selector, text, { delay: avgDelay });
   }
 
   /**

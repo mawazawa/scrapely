@@ -118,9 +118,11 @@ export async function verifyToken(
   try {
     const { payload, signature } = decodeToken(token);
 
-    // Check expiration
-    const now = Math.floor(Date.now() / 1000);
-    if (payload.exp && payload.exp < now) {
+    // Check expiration - exp is stored in seconds since epoch
+    const nowSeconds = Math.floor(Date.now() / 1000);
+    const expSeconds = typeof payload.exp === 'number' ? payload.exp : 0;
+
+    if (expSeconds > 0 && expSeconds < nowSeconds) {
       return { valid: false, error: 'Token expired' };
     }
 

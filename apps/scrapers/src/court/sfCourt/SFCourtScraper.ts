@@ -13,6 +13,67 @@ import { parseCaseNumber, validateCaseNumber, formatCaseNumber } from './caseNum
 import { humanDelay } from '../camoufox';
 
 /**
+ * Safely parse a date string, returning null for invalid dates
+ */
+function parseDate(dateString: string | null | undefined): Date | null {
+  if (!dateString || dateString.trim() === '') {
+    return null;
+  }
+
+  // Clean up the date string
+  const cleaned = dateString.trim();
+
+  // Try parsing the date
+  const date = new Date(cleaned);
+
+  // Check if the date is valid (NaN check)
+  if (isNaN(date.getTime())) {
+    // Try common date formats
+    const formats = [
+      // MM/DD/YYYY
+      /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/,
+      // YYYY-MM-DD
+      /^(\d{4})-(\d{1,2})-(\d{1,2})$/,
+      // Month DD, YYYY
+      /^([A-Za-z]+)\s+(\d{1,2}),?\s+(\d{4})$/,
+    ];
+
+    for (const format of formats) {
+      const match = cleaned.match(format);
+      if (match) {
+        let parsed: Date;
+        if (format === formats[0]) {
+          // MM/DD/YYYY
+          parsed = new Date(parseInt(match[3]), parseInt(match[1]) - 1, parseInt(match[2]));
+        } else if (format === formats[1]) {
+          // YYYY-MM-DD
+          parsed = new Date(parseInt(match[1]), parseInt(match[2]) - 1, parseInt(match[3]));
+        } else {
+          // Month DD, YYYY - use Date.parse which handles month names
+          parsed = new Date(cleaned);
+        }
+        if (!isNaN(parsed.getTime())) {
+          return parsed;
+        }
+      }
+    }
+
+    logger.debug('Failed to parse date', { dateString: cleaned });
+    return null;
+  }
+
+  return date;
+}
+
+/**
+ * Safely parse a date, returning a default date if parsing fails
+ */
+function parseDateWithDefault(dateString: string | null | undefined, defaultDate: Date = new Date()): Date {
+  const parsed = parseDate(dateString);
+  return parsed ?? defaultDate;
+}
+
+/**
  * SF Court scraper configuration
  */
 export interface SFCourtScraperConfig {
@@ -267,8 +328,8 @@ export class SFCourtScraper extends BaseCrawler {
     // Parse parties
     const parties = await this.parseParties();
 
-    // Parse filed date
-    const filedDate = filedDateStr ? new Date(filedDateStr) : new Date();
+    // Parse filed date safely (handles invalid date strings)
+    const filedDate = parseDateWithDefault(filedDateStr, new Date());
 
     // Map status
     let status: CaseInfo['status'] = 'open';
@@ -446,10 +507,13 @@ export class SFCourtScraper extends BaseCrawler {
 
         if (!dateText) continue;
 
-        // Parse date/time
+        // Parse date/time safely
         const dateParts = dateText.split(/\s+/);
-        const date = new Date(dateParts[0]);
+        const date = parseDate(dateParts[0]);
         const time = dateParts[1] || '9:00 AM';
+
+        // Skip if date is invalid
+        if (!date) continue;
 
         events.push({
           date,
@@ -487,7 +551,7 @@ export class SFCourtScraper extends BaseCrawler {
           id: crypto.randomUUID(),
           caseNumber,
           title: title.trim(),
-          filedDate: dateText ? new Date(dateText) : new Date(),
+          filedDate: parseDateWithDefault(dateText, new Date()),
           documentType: this.inferDocumentType(title),
           url,
         });

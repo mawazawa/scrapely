@@ -25,16 +25,17 @@ export const SF_CASE_PREFIXES: Record<SFCasePrefix, string> = {
 /**
  * Case number regex patterns
  * Format: AAA-YY-###### or AAAYY######
+ * Updated to accept more flexible sequence lengths (3-8 digits)
  */
 const CASE_NUMBER_PATTERNS = {
-  // Standard format with dashes: CGC-24-123456
-  dashed: /^([A-Z]{2,4})-(\d{2})-(\d{4,8})$/i,
+  // Standard format with dashes: CGC-24-123456 or CGC-24-123
+  dashed: /^([A-Z]{2,4})-(\d{2})-(\d{3,8})$/i,
 
   // Compact format without dashes: CGC24123456
-  compact: /^([A-Z]{2,4})(\d{2})(\d{4,8})$/i,
+  compact: /^([A-Z]{2,4})(\d{2})(\d{3,8})$/i,
 
   // Legacy format with spaces: CGC 24 123456
-  spaced: /^([A-Z]{2,4})\s+(\d{2})\s+(\d{4,8})$/i,
+  spaced: /^([A-Z]{2,4})\s+(\d{2})\s+(\d{3,8})$/i,
 };
 
 /**
@@ -68,18 +69,33 @@ export function isValidCaseNumber(input: string): boolean {
 
   const [, prefix, year] = match;
 
-  // Check prefix is valid
-  if (!Object.keys(SF_CASE_PREFIXES).includes(prefix)) {
+  // Check prefix is valid - be lenient for unknown prefixes from other courts
+  const upperPrefix = prefix.toUpperCase();
+  const isKnownPrefix = Object.keys(SF_CASE_PREFIXES).includes(upperPrefix);
+
+  if (!isKnownPrefix) {
+    // Log unknown prefix but don't reject - might be from a different court or new case type
+    // Only reject if prefix looks completely invalid (non-alphabetic, etc.)
+    if (!/^[A-Z]{2,4}$/i.test(prefix)) {
+      return false;
+    }
+  }
+
+  // Check year is reasonable
+  // Accept any 2-digit year - let the full year conversion handle interpretation
+  // This allows historical cases (e.g., 1985 = "85") and recent cases (e.g., 2024 = "24")
+  const yearNum = parseInt(year, 10);
+  if (isNaN(yearNum) || yearNum < 0 || yearNum > 99) {
     return false;
   }
 
-  // Check year is reasonable (not future, not too old)
-  const yearNum = parseInt(year, 10);
+  // Only reject obviously future years (more than 1 year ahead)
   const currentYear = new Date().getFullYear() % 100;
-  const minYear = (currentYear - 30 + 100) % 100; // 30 years back
+  const nextYear = (currentYear + 1) % 100;
 
-  // Handle century wrap-around
-  if (yearNum > currentYear && yearNum < minYear) {
+  // If year is 2-10 years ahead of current year (not wrapping around century), reject
+  // e.g., if current is 25, reject 27-34 but accept 35-99 (interpreted as 1935-1999)
+  if (yearNum > nextYear && yearNum <= currentYear + 10) {
     return false;
   }
 
@@ -163,11 +179,11 @@ export function getCaseUrl(caseNumber: CaseNumber | string, baseUrl: string): st
  * Zod schema for case number validation
  */
 export const CaseNumberInputSchema = z.string()
-  .min(8, 'Case number too short')
+  .min(7, 'Case number too short')  // Allow shorter sequences (3 digits)
   .max(20, 'Case number too long')
   .transform(normalizeCaseNumber)
   .refine(isValidCaseNumber, {
-    message: 'Invalid SF Superior Court case number format. Expected: AAA-YY-######',
+    message: 'Invalid case number format. Expected: AAA-YY-### (e.g., CGC-24-123456)',
   });
 
 /**

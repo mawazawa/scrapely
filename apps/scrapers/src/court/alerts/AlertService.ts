@@ -12,8 +12,8 @@ import type {
   AlertPreferences,
   AlertDeliveryResult,
   AlertBatch,
-  DEFAULT_ALERT_PREFERENCES,
 } from './types';
+import { DEFAULT_ALERT_PREFERENCES } from './types';
 import { changeTypeToAlertType, getAlertTypeDisplayName } from './types';
 import { isInQuietHours, getNextDeliveryTime, shouldBypassQuietHours } from './quietHours';
 import { AlertBatcher, createAlertBatcher } from './batching';
