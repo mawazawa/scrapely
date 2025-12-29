@@ -4,6 +4,41 @@ All notable changes to the Meridian project are documented here with ISO 8601 ti
 
 ---
 
+## [2025-12-29T10:00:00Z] Critical Bug Fixes - Court Scraping Infrastructure
+
+### Changes Made
+- **Bug Fixes**: Resolved 10 critical bugs affecting court scraping and user experience
+
+### Bug Fixes
+1. **AlertService import bug** - Fixed `DEFAULT_ALERT_PREFERENCES` imported as type instead of value
+2. **Camoufox API update** - Updated to correct camoufox-js API (`Camoufox()` instead of `launch()`)
+3. **BaseCrawler typeText** - Fixed input method to properly clear before typing with human-like delay
+4. **SearchService pagination** - Fixed unified search to properly paginate across merged results
+5. **TrackingService database** - Implemented database methods that were returning null placeholders
+6. **Cloudflare cookies** - Added proper `BrowserCookie` interface for type-safe cookie handling
+7. **Presign token expiration** - Fixed type handling for proper seconds-to-milliseconds comparison
+8. **SFCourtScraper dates** - Added safe date parsing with fallback for invalid date strings
+9. **Alert batching loop** - Fixed potential infinite loop when batch reaches max capacity
+10. **Case number validation** - Expanded to accept more valid formats (3+ digit sequences, flexible years)
+
+### Files Modified
+- `apps/scrapers/src/court/alerts/AlertService.ts` - Fixed import statement
+- `apps/scrapers/src/court/camoufox.ts` - Updated launch API and options
+- `apps/scrapers/src/court/BaseCrawler.ts` - Fixed typeText method
+- `apps/scrapers/src/court/search/SearchService.ts` - Fixed pagination logic
+- `apps/scrapers/src/court/tracking/TrackingService.ts` - Implemented database methods
+- `apps/scrapers/src/court/cloudflare.ts` - Added BrowserCookie type, fixed validation
+- `apps/scrapers/src/court/storage/presign.ts` - Fixed expiration type handling
+- `apps/scrapers/src/court/sfCourt/SFCourtScraper.ts` - Added safe date parsing helper
+- `apps/scrapers/src/court/alerts/batching.ts` - Fixed batch overflow handling
+- `apps/scrapers/src/court/sfCourt/caseNumber.ts` - Relaxed validation patterns
+
+### Confidence Scores
+- Implementation: 95%
+- Testing Required: Medium (integration tests recommended)
+
+---
+
 ## [2025-12-28T18:00:00Z] Court Data Platform - Phase 2 Complete (All 10 Actions)
 
 ### Changes Made

@@ -1,9 +1,9 @@
 # Court Data Platform: 10 Highest Leverage Actions
 
-> **Last Updated**: 2025-12-28T00:00:00Z
-> **Research Validated**: December 28, 2025
+> **Last Updated**: 2025-12-29T10:00:00Z
+> **Research Validated**: December 29, 2025
 > **Target**: Build a 10x improved alternative to UniCourt, starting with SF Superior Court
-> **Phase**: MVP - Personal cases + test users
+> **Phase**: MVP - Core platform complete, bug fixes applied, ready for testing
 
 ---
 
@@ -23,7 +23,7 @@ Build a comprehensive court data platform that:
 | Component | Technology | Version | Documentation |
 |-----------|------------|---------|---------------|
 | **Scraping Framework** | Crawlee | 3.15.3 | [crawlee.dev](https://crawlee.dev/) |
-| **Cloudflare Bypass** | Camoufox-js | Latest | [npm](https://www.npmjs.com/package/camoufox-js) |
+| **Cloudflare Bypass** | Camoufox-js | 0.8.4 | [npm](https://www.npmjs.com/package/camoufox-js) |
 | **API Client** | apify-client | Latest | [docs.apify.com](https://docs.apify.com/api/client/js) |
 | **Browser** | Playwright + Firefox | Latest | [playwright.dev](https://playwright.dev/) |
 | **Database** | PostgreSQL + Drizzle | 0.45.x | [orm.drizzle.team](https://orm.drizzle.team/) |
@@ -32,20 +32,52 @@ Build a comprehensive court data platform that:
 
 ---
 
-## Next 10 High-Leverage Actions
+## Completed Actions (Phase 1 & 2)
+
+| # | Action | Confidence | Status |
+|---|--------|------------|--------|
+| 1 | **Apify + Crawlee Integration** | 92% | ✅ Complete |
+| 2 | **SF Court Scraper with Cloudflare Bypass** | 88% | ✅ Complete |
+| 3 | **Court Data Schema & Database** | 95% | ✅ Complete |
+| 4 | **Tentative Rulings Parser** | 85% | ✅ Complete |
+| 5 | **Case Tracking & Monitoring System** | 82% | ✅ Complete |
+| 6 | **User Case Management** | 80% | ✅ Complete |
+| 7 | **Court Document Storage (R2)** | 90% | ✅ Complete |
+| 8 | **Case Update Alert System** | 78% | ✅ Complete |
+| 9 | **Court Data Search Infrastructure** | 85% | ✅ Complete |
+| 10 | **Public Court Data API** | 75% | ✅ Complete |
+
+## Bug Fixes Applied (2025-12-29)
+
+| # | Bug | Impact | Status |
+|---|-----|--------|--------|
+| 1 | AlertService type import | Runtime crash | ✅ Fixed |
+| 2 | Camoufox API mismatch | Scraper fails | ✅ Fixed |
+| 3 | BaseCrawler typeText | Input issues | ✅ Fixed |
+| 4 | SearchService pagination | Wrong results | ✅ Fixed |
+| 5 | TrackingService placeholders | Data loss | ✅ Fixed |
+| 6 | Cloudflare cookie types | Type errors | ✅ Fixed |
+| 7 | Presign expiration | Token bugs | ✅ Fixed |
+| 8 | Date parsing | Invalid dates | ✅ Fixed |
+| 9 | Alert batching loop | Infinite loop | ✅ Fixed |
+| 10 | Case number validation | Valid rejected | ✅ Fixed |
+
+---
+
+## Next 10 High-Leverage Actions (Phase 3)
 
 | # | Action | Confidence | Impact | Effort | Status |
 |---|--------|------------|--------|--------|--------|
-| 1 | **Apify + Crawlee Integration** | 92% | Critical | 2 days | Pending |
-| 2 | **SF Court Scraper with Cloudflare Bypass** | 88% | Critical | 3 days | Pending |
-| 3 | **Court Data Schema & Database** | 95% | Critical | 1 day | Pending |
-| 4 | **Tentative Rulings Parser** | 85% | High | 2 days | Pending |
-| 5 | **Case Tracking & Monitoring System** | 82% | High | 2 days | Pending |
-| 6 | **User Case Management** | 80% | High | 2 days | Pending |
-| 7 | **Court Document Storage (R2)** | 90% | Medium | 1 day | Pending |
-| 8 | **Case Update Alert System** | 78% | High | 2 days | Pending |
-| 9 | **Court Data Search Infrastructure** | 85% | High | 2 days | Pending |
-| 10 | **Public Court Data API** | 75% | Medium | 2 days | Pending |
+| 1 | **Integration Testing Suite** | 90% | Critical | 2 days | Pending |
+| 2 | **End-to-End Scraping Tests** | 85% | Critical | 2 days | Pending |
+| 3 | **Los Angeles County Court Support** | 80% | High | 3 days | Pending |
+| 4 | **Multi-Court Dashboard UI** | 85% | High | 3 days | Pending |
+| 5 | **Scheduled Scraping Jobs** | 88% | High | 1 day | Pending |
+| 6 | **User Authentication (Auth0)** | 90% | High | 2 days | Pending |
+| 7 | **Case Comparison Tool** | 75% | Medium | 2 days | Pending |
+| 8 | **Ruling Analytics Dashboard** | 78% | Medium | 2 days | Pending |
+| 9 | **Email Notification Templates** | 85% | Medium | 1 day | Pending |
+| 10 | **Mobile-Responsive PWA** | 82% | Medium | 3 days | Pending |
 
 ---
 
