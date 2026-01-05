@@ -1,490 +1,605 @@
 # Court Data Platform: 10 Highest Leverage Actions
 
-> **Last Updated**: 2025-12-29T10:00:00Z
-> **Research Validated**: December 29, 2025
+> **Last Updated**: 2026-01-05T12:00:00Z
+> **Research Validated**: January 5, 2026
 > **Target**: Build a 10x improved alternative to UniCourt, starting with SF Superior Court
-> **Phase**: MVP - Core platform complete, bug fixes applied, ready for testing
+> **Phase**: Phase 3 - Production Readiness & Market Expansion
 
 ---
 
-## Platform Vision
+## Executive Summary
 
-Build a comprehensive court data platform that:
-1. Bypasses Cloudflare protection using Apify/Crawlee/Camoufox
-2. Scrapes SF Superior Court tentative rulings and case information
-3. Provides real-time case tracking and alerts
-4. Scales to support multiple California courts
-5. Eventually becomes a UniCourt competitor
+After deep codebase analysis, the following **critical gaps** were identified:
 
----
-
-## Technology Stack (Verified December 2025)
-
-| Component | Technology | Version | Documentation |
-|-----------|------------|---------|---------------|
-| **Scraping Framework** | Crawlee | 3.15.3 | [crawlee.dev](https://crawlee.dev/) |
-| **Cloudflare Bypass** | Camoufox-js | 0.8.4 | [npm](https://www.npmjs.com/package/camoufox-js) |
-| **API Client** | apify-client | Latest | [docs.apify.com](https://docs.apify.com/api/client/js) |
-| **Browser** | Playwright + Firefox | Latest | [playwright.dev](https://playwright.dev/) |
-| **Database** | PostgreSQL + Drizzle | 0.45.x | [orm.drizzle.team](https://orm.drizzle.team/) |
-| **Workers** | Cloudflare Workers | Latest | [developers.cloudflare.com](https://developers.cloudflare.com/workers/) |
-| **Storage** | Cloudflare R2 | Latest | [developers.cloudflare.com/r2](https://developers.cloudflare.com/r2/) |
+| Gap | Impact | Current State |
+|-----|--------|---------------|
+| **User Authentication** | 🔴 Blocking | Zero - only API keys exist |
+| **Error Tracking** | 🔴 Critical | No Sentry, basic logging only |
+| **Court Scraping Tests** | 🟠 High Risk | No integration tests for court/* |
+| **Scheduled Scraping** | 🟠 Data Staleness | No court cron jobs (only RSS) |
+| **Case Dashboard UI** | 🟠 User Adoption | No court UI pages at all |
+| **LA Court Support** | 🟡 Market Size | Only SF (LA is 10x larger) |
+| **Billing** | 🟡 Revenue | Zero payment infrastructure |
 
 ---
 
 ## Completed Actions (Phase 1 & 2)
 
-| # | Action | Confidence | Status |
-|---|--------|------------|--------|
-| 1 | **Apify + Crawlee Integration** | 92% | ✅ Complete |
-| 2 | **SF Court Scraper with Cloudflare Bypass** | 88% | ✅ Complete |
-| 3 | **Court Data Schema & Database** | 95% | ✅ Complete |
-| 4 | **Tentative Rulings Parser** | 85% | ✅ Complete |
-| 5 | **Case Tracking & Monitoring System** | 82% | ✅ Complete |
-| 6 | **User Case Management** | 80% | ✅ Complete |
-| 7 | **Court Document Storage (R2)** | 90% | ✅ Complete |
-| 8 | **Case Update Alert System** | 78% | ✅ Complete |
-| 9 | **Court Data Search Infrastructure** | 85% | ✅ Complete |
-| 10 | **Public Court Data API** | 75% | ✅ Complete |
-
-## Bug Fixes Applied (2025-12-29)
-
-| # | Bug | Impact | Status |
-|---|-----|--------|--------|
-| 1 | AlertService type import | Runtime crash | ✅ Fixed |
-| 2 | Camoufox API mismatch | Scraper fails | ✅ Fixed |
-| 3 | BaseCrawler typeText | Input issues | ✅ Fixed |
-| 4 | SearchService pagination | Wrong results | ✅ Fixed |
-| 5 | TrackingService placeholders | Data loss | ✅ Fixed |
-| 6 | Cloudflare cookie types | Type errors | ✅ Fixed |
-| 7 | Presign expiration | Token bugs | ✅ Fixed |
-| 8 | Date parsing | Invalid dates | ✅ Fixed |
-| 9 | Alert batching loop | Infinite loop | ✅ Fixed |
-| 10 | Case number validation | Valid rejected | ✅ Fixed |
+| # | Action | Status |
+|---|--------|--------|
+| 1 | Apify + Crawlee Integration | ✅ Complete |
+| 2 | SF Court Scraper with Cloudflare Bypass | ✅ Complete |
+| 3 | Court Data Schema & Database | ✅ Complete |
+| 4 | Tentative Rulings Parser | ✅ Complete |
+| 5 | Case Tracking & Monitoring System | ✅ Complete |
+| 6 | User Case Management | ✅ Complete |
+| 7 | Court Document Storage (R2) | ✅ Complete |
+| 8 | Case Update Alert System | ✅ Complete |
+| 9 | Court Data Search Infrastructure | ✅ Complete |
+| 10 | Public Court Data API | ✅ Complete |
+| 🐛 | 10 Critical Bug Fixes | ✅ Complete |
 
 ---
 
 ## Next 10 High-Leverage Actions (Phase 3)
 
-| # | Action | Confidence | Impact | Effort | Status |
-|---|--------|------------|--------|--------|--------|
-| 1 | **Integration Testing Suite** | 90% | Critical | 2 days | Pending |
-| 2 | **End-to-End Scraping Tests** | 85% | Critical | 2 days | Pending |
-| 3 | **Los Angeles County Court Support** | 80% | High | 3 days | Pending |
-| 4 | **Multi-Court Dashboard UI** | 85% | High | 3 days | Pending |
-| 5 | **Scheduled Scraping Jobs** | 88% | High | 1 day | Pending |
-| 6 | **User Authentication (Auth0)** | 90% | High | 2 days | Pending |
-| 7 | **Case Comparison Tool** | 75% | Medium | 2 days | Pending |
-| 8 | **Ruling Analytics Dashboard** | 78% | Medium | 2 days | Pending |
-| 9 | **Email Notification Templates** | 85% | Medium | 1 day | Pending |
-| 10 | **Mobile-Responsive PWA** | 82% | Medium | 3 days | Pending |
+| # | Action | Confidence | Impact | Effort | Priority |
+|---|--------|------------|--------|--------|----------|
+| 1 | **User Authentication (Clerk)** | 92% | 🔴 Blocking | 3 days | P0 |
+| 2 | **Production Error Tracking (Sentry)** | 95% | 🔴 Critical | 1 day | P0 |
+| 3 | **Court Scraping Integration Tests** | 90% | 🟠 High Risk | 3 days | P0 |
+| 4 | **Scheduled Court Scraping Jobs** | 88% | 🟠 Core Value | 2 days | P1 |
+| 5 | **Case Tracking Dashboard UI** | 85% | 🟠 User Value | 4 days | P1 |
+| 6 | **LA Superior Court Scraper** | 80% | 🟡 Market Size | 5 days | P1 |
+| 7 | **Webhook Delivery Queue** | 85% | 🟡 Reliability | 2 days | P2 |
+| 8 | **Usage Metrics Dashboard** | 82% | 🟡 Intelligence | 2 days | P2 |
+| 9 | **Stripe Billing Integration** | 78% | 🟡 Revenue | 4 days | P2 |
+| 10 | **Data Quality Pipeline** | 80% | 🟡 Integrity | 3 days | P2 |
 
 ---
 
-## Action 1: Apify + Crawlee Integration (Confidence: 92%)
+## Action 1: User Authentication with Clerk (Confidence: 92%)
 
-**Research Date**: 2025-12-28
-**Documentation Validated**: Yes - [Crawlee 3.15.3](https://www.npmjs.com/package/crawlee), [apify-client](https://docs.apify.com/api/client/js)
+**Research Date**: 2026-01-05
+**Documentation Validated**: Yes - [clerk.com/docs](https://clerk.com/docs)
 
-### Why This Matters
-- Foundation for all court scraping
-- Cloudflare bypass capability with Camoufox
-- Automatic retries and rate limiting
-- Scales to millions of pages
+### Why This Is Highest Leverage
+
+Without user authentication, the platform cannot:
+- Have real users sign up and log in
+- Protect user-specific data (tracked cases, alerts)
+- Enable personalized experiences
+- Implement billing (requires user identity)
+- Provide secure API access beyond static keys
+
+**This blocks ALL user-facing features.**
+
+### Why Clerk vs Auth0/Firebase
+
+| Factor | Clerk | Auth0 | Firebase |
+|--------|-------|-------|----------|
+| **Cloudflare Workers** | ✅ First-class | ⚠️ Complex | ❌ Limited |
+| **Nuxt 3 Integration** | ✅ Official SDK | ⚠️ Community | ⚠️ Community |
+| **Pricing** | Free tier + usage | Expensive | Complex |
+| **UI Components** | Pre-built | DIY | DIY |
+| **Time to Implement** | ~3 days | ~7 days | ~5 days |
 
 ### Success Criteria
-- [ ] Crawlee installed and configured
-- [ ] Camoufox browser launches successfully
-- [ ] Can bypass Cloudflare challenge page
-- [ ] Apify client connects to API
-- [ ] Test scrape of protected page succeeds
+- [ ] Users can sign up with email or Google/GitHub
+- [ ] Protected routes redirect to sign-in
+- [ ] User ID flows through to database operations
+- [ ] Session persists across page refreshes
+- [ ] API routes validate Clerk session tokens
 
 ### Atomic Subtasks
 
-| # | Task | Files (≤5) | Success Criteria |
-|---|------|------------|------------------|
-| 1.1 | Add Crawlee dependencies | `apps/scrapers/package.json` | `crawlee@3.15.3`, `@crawlee/playwright`, `playwright` installed |
-| 1.2 | Add Camoufox dependencies | `apps/scrapers/package.json` | `camoufox-js`, `playwright-core` installed |
-| 1.3 | Add Apify client | `apps/scrapers/package.json` | `apify-client` installed |
-| 1.4 | Create Crawlee config | `apps/scrapers/src/court/crawlee.config.ts` | Export valid CrawlerConfig |
-| 1.5 | Create Camoufox launcher | `apps/scrapers/src/court/camoufox.ts` | `launchCamoufox()` returns browser |
-| 1.6 | Create Cloudflare handler | `apps/scrapers/src/court/cloudflare.ts` | `handleCloudflareChallenge()` solves turnstile |
-| 1.7 | Create Apify client wrapper | `apps/scrapers/src/court/apifyClient.ts` | `ApifyClientWrapper` with retry logic |
-| 1.8 | Create base crawler class | `apps/scrapers/src/court/BaseCrawler.ts` | Abstract class with common methods |
-| 1.9 | Add proxy configuration | `apps/scrapers/src/court/proxy.ts` | Residential proxy support |
-| 1.10 | Create crawler factory | `apps/scrapers/src/court/CrawlerFactory.ts` | Factory returns configured crawler |
-| 1.11 | Add rate limiting | `apps/scrapers/src/court/rateLimit.ts` | Max 1 req/min to courts |
-| 1.12 | Create test for Cloudflare bypass | `apps/scrapers/test/court/cloudflare.spec.ts` | Test passes on protected site |
-| 1.13 | Add environment variables | `apps/scrapers/.dev.vars.example` | APIFY_TOKEN, proxy config documented |
-| 1.14 | Create types for court scraping | `apps/scrapers/src/court/types.ts` | All interfaces exported |
-| 1.15 | Add error handling | `apps/scrapers/src/court/errors.ts` | CourtScraperError class with codes |
+| # | Task | Files (≤5) | Description |
+|---|------|------------|-------------|
+| 1.1 | Create Clerk account & app | - | Sign up at clerk.com, create application |
+| 1.2 | Install Clerk packages | `apps/frontend/package.json`, `apps/scrapers/package.json` | `@clerk/nuxt`, `@clerk/backend` |
+| 1.3 | Configure Clerk environment | `apps/frontend/.env`, `apps/scrapers/.dev.vars` | CLERK_PUBLISHABLE_KEY, CLERK_SECRET_KEY |
+| 1.4 | Add Clerk Nuxt module | `apps/frontend/nuxt.config.ts` | Register @clerk/nuxt module |
+| 1.5 | Create auth middleware | `apps/frontend/src/middleware/auth.ts` | Protect routes requiring authentication |
+| 1.6 | Add sign-in page | `apps/frontend/src/pages/sign-in/[[...sign-in]].vue` | Clerk SignIn component |
+| 1.7 | Add sign-up page | `apps/frontend/src/pages/sign-up/[[...sign-up]].vue` | Clerk SignUp component |
+| 1.8 | Add user button to header | `apps/frontend/src/layouts/default.vue` | UserButton component |
+| 1.9 | Create users table | `packages/database/src/schema.ts` | $users table linked to Clerk IDs |
+| 1.10 | Add user sync webhook | `apps/scrapers/src/routes/webhooks.router.ts` | Sync Clerk users to database |
+| 1.11 | Create auth middleware for API | `apps/scrapers/src/middleware/clerkAuth.ts` | Verify Clerk session tokens |
+| 1.12 | Update case tracking to use user ID | `apps/scrapers/src/court/tracking/TrackingService.ts` | Replace string userId with Clerk ID |
+| 1.13 | Update alert service to use user ID | `apps/scrapers/src/court/alerts/AlertService.ts` | Link alerts to authenticated users |
+| 1.14 | Add user profile page | `apps/frontend/src/pages/profile.vue` | Display user info, settings |
+| 1.15 | Write auth integration tests | `apps/frontend/e2e/auth.spec.ts` | Test sign-in, sign-up, protected routes |
+
+### Cognitive Empathy Analysis
+
+| Perspective | Considerations |
+|-------------|----------------|
+| **User** | Frictionless sign-up, social login options, password recovery |
+| **Developer** | Type-safe session handling, clear auth patterns |
+| **Operations** | User management dashboard, suspicious activity monitoring |
 
 ---
 
-## Action 2: SF Court Scraper with Cloudflare Bypass (Confidence: 88%)
+## Action 2: Production Error Tracking with Sentry (Confidence: 95%)
 
-**Research Date**: 2025-12-28
-**Documentation Validated**: Yes - [sf.courts.ca.gov](https://sf.courts.ca.gov/online-services)
+**Research Date**: 2026-01-05
+**Documentation Validated**: Yes - [docs.sentry.io/platforms/javascript/guides/cloudflare/](https://docs.sentry.io/platforms/javascript/guides/cloudflare/)
 
-### Why This Matters
-- Core scraper for SF Superior Court
-- Handles case info and tentative rulings
-- Foundation for other California courts
-- Cloudflare Turnstile bypass tested
+### Why This Is Critical
 
-### SF Court Case Number Format
-- Format: `AAA-YY-######` (e.g., `CGC-24-123456`)
-- Prefixes: `CGC` (Civil), `FDI` (Family Dissolution), `CNC` (Civil Non-Complex)
-- Years: 2-digit (e.g., `24` = 2024)
+Current state: When the scraper fails in production, you have:
+- Basic console logs in Cloudflare dashboard
+- No stack traces with source maps
+- No error grouping or deduplication
+- No alerting on critical errors
+- No performance monitoring
+
+**You cannot debug production issues effectively without this.**
 
 ### Success Criteria
-- [ ] Scraper navigates to sf.courts.ca.gov
-- [ ] Cloudflare challenge solved automatically
-- [ ] Case lookup by number works
-- [ ] Tentative rulings page scraped
-- [ ] Data extracted matches schema
+- [ ] All errors in Workers captured with full context
+- [ ] Source maps uploaded for readable stack traces
+- [ ] Alerts configured for critical errors (email/Slack)
+- [ ] Performance monitoring enabled
+- [ ] Frontend errors captured with user context
 
 ### Atomic Subtasks
 
-| # | Task | Files (≤5) | Success Criteria |
-|---|------|------------|------------------|
-| 2.1 | Create SF Court scraper class | `apps/scrapers/src/court/sfCourt/SFCourtScraper.ts` | Extends BaseCrawler |
-| 2.2 | Define SF Court URLs | `apps/scrapers/src/court/sfCourt/urls.ts` | All endpoint URLs exported |
-| 2.3 | Create case lookup method | `apps/scrapers/src/court/sfCourt/SFCourtScraper.ts` | `lookupCase(caseNumber)` returns CaseInfo |
-| 2.4 | Create tentative rulings scraper | `apps/scrapers/src/court/sfCourt/tentativeRulings.ts` | `scrapeTentativeRulings(date)` returns array |
-| 2.5 | Add case number validator | `apps/scrapers/src/court/sfCourt/caseNumber.ts` | Validates CGC, FDI, CNC formats |
-| 2.6 | Create page selectors | `apps/scrapers/src/court/sfCourt/selectors.ts` | CSS selectors for all elements |
-| 2.7 | Handle session persistence | `apps/scrapers/src/court/sfCourt/session.ts` | Reuse Cloudflare cookies |
-| 2.8 | Create party name search | `apps/scrapers/src/court/sfCourt/SFCourtScraper.ts` | `searchByPartyName(name)` returns cases |
-| 2.9 | Extract case calendar | `apps/scrapers/src/court/sfCourt/calendar.ts` | `getCaseCalendar(caseNumber)` works |
-| 2.10 | Extract case documents list | `apps/scrapers/src/court/sfCourt/documents.ts` | `getDocuments(caseNumber)` returns list |
-| 2.11 | Handle pagination | `apps/scrapers/src/court/sfCourt/pagination.ts` | Multi-page results scraped |
-| 2.12 | Create retry logic | `apps/scrapers/src/court/sfCourt/retry.ts` | Exponential backoff on failures |
-| 2.13 | Add scrape logging | `apps/scrapers/src/court/sfCourt/logging.ts` | All actions logged with trace ID |
-| 2.14 | Create integration test | `apps/scrapers/test/court/sfCourt.spec.ts` | Full flow test passes |
-| 2.15 | Add mock responses | `apps/scrapers/test/fixtures/sfCourt/` | HTML fixtures for testing |
-| 2.16 | Create scraper health check | `apps/scrapers/src/court/sfCourt/health.ts` | `checkHealth()` verifies access |
+| # | Task | Files (≤5) | Description |
+|---|------|------------|-------------|
+| 2.1 | Create Sentry account & project | - | Create projects for scrapers and frontend |
+| 2.2 | Install Sentry Workers SDK | `apps/scrapers/package.json` | `@sentry/cloudflare` |
+| 2.3 | Install Sentry Vue SDK | `apps/frontend/package.json` | `@sentry/vue` |
+| 2.4 | Configure Sentry environment | `apps/scrapers/.dev.vars`, `apps/frontend/.env` | SENTRY_DSN |
+| 2.5 | Initialize Sentry in Workers | `apps/scrapers/src/index.ts` | Wrap Hono app with Sentry |
+| 2.6 | Initialize Sentry in Nuxt | `apps/frontend/src/plugins/sentry.ts` | Vue error handler integration |
+| 2.7 | Add source map upload | `.github/workflows/deploy-services.yaml` | Upload source maps on deploy |
+| 2.8 | Configure error sampling | `apps/scrapers/src/lib/sentry.ts` | Sample rate, environment tagging |
+| 2.9 | Add user context | `apps/scrapers/src/middleware/sentry.ts` | Attach user ID to errors |
+| 2.10 | Configure alerts | Sentry dashboard | Email alerts for critical errors |
+| 2.11 | Add performance monitoring | `apps/scrapers/src/lib/sentry.ts` | Transaction tracing for scrapers |
+| 2.12 | Create error boundary component | `apps/frontend/src/components/ErrorBoundary.vue` | Graceful error UI |
+| 2.13 | Add scraper error tracking | `apps/scrapers/src/court/BaseCrawler.ts` | Capture scraping failures |
+| 2.14 | Document error handling patterns | `docs/error-handling.md` | Team reference for error handling |
+| 2.15 | Test error capture | Manual testing | Trigger errors, verify in Sentry |
 
 ---
 
-## Action 3: Court Data Schema & Database (Confidence: 95%)
+## Action 3: Court Scraping Integration Tests (Confidence: 90%)
 
-**Research Date**: 2025-12-28
-**Documentation Validated**: Yes - [Drizzle ORM](https://orm.drizzle.team/)
+**Research Date**: 2026-01-05
+**Documentation Validated**: Yes - [vitest.dev](https://vitest.dev/), [playwright.dev](https://playwright.dev/)
 
-### Why This Matters
-- Structured storage for all court data
-- Relationships between cases, parties, rulings
-- Supports search and analytics
-- Scales to millions of records
+### Why This Is High Risk Without Tests
+
+The court scraper:
+- Bypasses Cloudflare protection (fragile)
+- Parses complex HTML (changes break it)
+- Handles rate limiting (easy to break)
+- Manages sessions (state-dependent)
+
+**Without tests, any change could break production scraping silently.**
+
+### Current Test Coverage Analysis
+
+| Module | Lines of Tests | Coverage |
+|--------|---------------|----------|
+| RSS parsing | 64 lines | ✅ Good |
+| Cache library | 181 lines | ✅ Good |
+| Dedup library | 187 lines | ✅ Good |
+| Error handling | 136 lines | ✅ Good |
+| Security | 115 lines | ✅ Good |
+| **Court Cloudflare** | 0 lines | ❌ None |
+| **Court SFCourt Scraper** | 0 lines | ❌ None |
+| **Court Alert Service** | 0 lines | ❌ None |
+| **Court Tracking Service** | 0 lines | ❌ None |
+| **Court Search Service** | 0 lines | ❌ None |
 
 ### Success Criteria
-- [ ] All court tables created
-- [ ] Indexes for common queries
-- [ ] Migrations generated and applied
-- [ ] Types exported for TypeScript
-- [ ] Test queries execute successfully
+- [ ] Cloudflare bypass tested with mock challenge page
+- [ ] SF Court scraper tested with recorded HTML fixtures
+- [ ] Alert service tested with mock delivery
+- [ ] Tracking service tested with mock database
+- [ ] 80%+ coverage on court/* modules
 
 ### Atomic Subtasks
 
-| # | Task | Files (≤5) | Success Criteria |
-|---|------|------------|------------------|
-| 3.1 | Create courts table | `packages/database/src/schema.ts` | $courts with id, name, county, state |
-| 3.2 | Create cases table | `packages/database/src/schema.ts` | $cases with caseNumber, courtId, caseType |
-| 3.3 | Create parties table | `packages/database/src/schema.ts` | $parties with name, type, caseId |
-| 3.4 | Create attorneys table | `packages/database/src/schema.ts` | $attorneys with name, barNumber, firm |
-| 3.5 | Create rulings table | `packages/database/src/schema.ts` | $rulings with caseId, rulingDate, content |
-| 3.6 | Create documents table | `packages/database/src/schema.ts` | $documents with caseId, title, filedDate |
-| 3.7 | Create events table | `packages/database/src/schema.ts` | $caseEvents with caseId, eventType, date |
-| 3.8 | Create case_tracking table | `packages/database/src/schema.ts` | $caseTracking with userId, caseId |
-| 3.9 | Add indexes | `packages/database/src/schema.ts` | Indexes on caseNumber, partyName, date |
-| 3.10 | Create relations | `packages/database/src/relations.ts` | Drizzle relations defined |
-| 3.11 | Generate migrations | `packages/database/migrations/` | Migration files created |
-| 3.12 | Create type exports | `packages/database/src/types.ts` | All table types exported |
-| 3.13 | Add seed data | `packages/database/src/seed.ts` | SF Court seeded |
-| 3.14 | Create query helpers | `packages/database/src/queries/court.ts` | Common court queries |
-| 3.15 | Add test for schema | `packages/database/test/court.spec.ts` | CRUD operations work |
+| # | Task | Files (≤5) | Description |
+|---|------|------------|-------------|
+| 3.1 | Set up MSW for API mocking | `apps/scrapers/test/setup.ts`, `package.json` | Mock Service Worker for HTTP |
+| 3.2 | Create HTML fixtures for SF Court | `apps/scrapers/test/fixtures/sfCourt/*.html` | Recorded court pages |
+| 3.3 | Test Cloudflare detection | `apps/scrapers/test/court/cloudflare.spec.ts` | isCloudflareChallenge() |
+| 3.4 | Test case number validation | `apps/scrapers/test/court/caseNumber.spec.ts` | All case number patterns |
+| 3.5 | Test SFCourtScraper with fixtures | `apps/scrapers/test/court/sfCourt.spec.ts` | Mock page, test parsing |
+| 3.6 | Test BaseCrawler methods | `apps/scrapers/test/court/baseCrawler.spec.ts` | navigate, typeText, click |
+| 3.7 | Test AlertService | `apps/scrapers/test/court/alertService.spec.ts` | Mock email, push, webhook |
+| 3.8 | Test TrackingService | `apps/scrapers/test/court/trackingService.spec.ts` | Mock database |
+| 3.9 | Test SearchService | `apps/scrapers/test/court/searchService.spec.ts` | Mock database queries |
+| 3.10 | Test presign token generation | `apps/scrapers/test/court/presign.spec.ts` | Token create/verify |
+| 3.11 | Add coverage reporting | `apps/scrapers/vitest.config.ts` | c8 coverage provider |
+| 3.12 | Add coverage to CI | `.github/workflows/deploy-services.yaml` | Fail if coverage drops |
+| 3.13 | Create E2E scraper test | `apps/scrapers/test/e2e/scraper.spec.ts` | Full scrape with real browser |
+| 3.14 | Document test patterns | `apps/scrapers/test/README.md` | How to write court tests |
+| 3.15 | Add test data generators | `apps/scrapers/test/factories/*.ts` | Factory functions for test data |
 
 ---
 
-## Action 4: Tentative Rulings Parser (Confidence: 85%)
+## Action 4: Scheduled Court Scraping Jobs (Confidence: 88%)
 
-**Research Date**: 2025-12-28
-**Documentation Validated**: Yes - SF Court rulings format analyzed
+**Research Date**: 2026-01-05
+**Documentation Validated**: Yes - [developers.cloudflare.com/workers/configuration/cron-triggers/](https://developers.cloudflare.com/workers/configuration/cron-triggers/)
 
-### Why This Matters
-- Extracts structured data from rulings
-- Identifies case outcomes
-- Enables ruling search
-- Critical for case tracking
+### Why This Enables Core Value
+
+Without scheduled scraping:
+- Court data becomes stale immediately after manual scrape
+- Real-time alerts are impossible
+- Users must manually trigger refreshes
+- Value proposition of "monitoring" is broken
+
+### Current Cron Jobs in wrangler.toml
+```toml
+crons = [ "4 * * * *", "0 8 * * *" ]
+```
+- `4 * * * *` - RSS feed scraping (hourly)
+- `0 8 * * *` - Newsletter (daily)
+- **MISSING**: Court scraping schedules
 
 ### Success Criteria
-- [ ] HTML rulings parsed to structured data
-- [ ] Judge name extracted
-- [ ] Ruling date extracted
-- [ ] Case number linked
-- [ ] Ruling text cleaned and stored
+- [ ] SF Court tentative rulings scraped daily at 6 AM PT
+- [ ] Tracked cases refreshed every 4 hours
+- [ ] Failed jobs retry with exponential backoff
+- [ ] Job status visible in admin dashboard
+- [ ] Alerts triggered when new rulings found
 
 ### Atomic Subtasks
 
-| # | Task | Files (≤5) | Success Criteria |
-|---|------|------------|------------------|
-| 4.1 | Create ruling parser | `apps/scrapers/src/court/parsers/rulingParser.ts` | `parseRuling(html)` returns Ruling |
-| 4.2 | Extract judge name | `apps/scrapers/src/court/parsers/rulingParser.ts` | Judge name parsed correctly |
-| 4.3 | Extract ruling date | `apps/scrapers/src/court/parsers/rulingParser.ts` | Date in ISO format |
-| 4.4 | Extract case number | `apps/scrapers/src/court/parsers/rulingParser.ts` | Case number validated |
-| 4.5 | Clean ruling text | `apps/scrapers/src/court/parsers/textCleaner.ts` | HTML tags removed, text normalized |
-| 4.6 | Identify ruling type | `apps/scrapers/src/court/parsers/rulingParser.ts` | GRANTED/DENIED/CONTINUED detected |
-| 4.7 | Extract motion type | `apps/scrapers/src/court/parsers/rulingParser.ts` | Motion type categorized |
-| 4.8 | Parse hearing info | `apps/scrapers/src/court/parsers/hearingParser.ts` | Hearing date/time/dept extracted |
-| 4.9 | Create ruling schema | `apps/scrapers/src/court/parsers/schemas.ts` | Zod schema for validation |
-| 4.10 | Handle multi-ruling pages | `apps/scrapers/src/court/parsers/rulingParser.ts` | Array of rulings returned |
-| 4.11 | Create parser tests | `apps/scrapers/test/court/rulingParser.spec.ts` | Test fixtures pass |
-| 4.12 | Add HTML fixtures | `apps/scrapers/test/fixtures/rulings/` | Sample ruling HTML |
-| 4.13 | Handle edge cases | `apps/scrapers/src/court/parsers/rulingParser.ts` | Empty/malformed rulings handled |
-| 4.14 | Create ruling differ | `apps/scrapers/src/court/parsers/rulingDiff.ts` | Detect changes between rulings |
-| 4.15 | Add ruling metadata | `apps/scrapers/src/court/parsers/rulingParser.ts` | scrapedAt, sourceUrl stored |
+| # | Task | Files (≤5) | Description |
+|---|------|------------|-------------|
+| 4.1 | Create court scraping workflow | `apps/scrapers/src/workflows/courtScrape.workflow.ts` | Cloudflare Workflow for scraping |
+| 4.2 | Add cron triggers for court | `apps/scrapers/wrangler.toml` | `0 14 * * *` (6 AM PT) |
+| 4.3 | Create tracked cases refresh job | `apps/scrapers/src/workflows/refreshTracked.workflow.ts` | Refresh user-tracked cases |
+| 4.4 | Add job scheduling table | `packages/database/src/schema.ts` | $courtScrapeJobs |
+| 4.5 | Implement job queue | `apps/scrapers/src/court/jobs/queue.ts` | Priority queue for scrape jobs |
+| 4.6 | Add retry logic with backoff | `apps/scrapers/src/court/jobs/retry.ts` | Exponential backoff |
+| 4.7 | Create job status API | `apps/scrapers/src/routes/jobs.router.ts` | GET /jobs, GET /jobs/:id |
+| 4.8 | Add job dashboard component | `apps/frontend/src/pages/admin/jobs.vue` | View job status |
+| 4.9 | Implement job concurrency limits | `apps/scrapers/src/court/jobs/limiter.ts` | Max 1 concurrent per court |
+| 4.10 | Add failure alerting | `apps/scrapers/src/court/jobs/alerts.ts` | Alert on repeated failures |
+| 4.11 | Create job metrics | `apps/scrapers/src/court/jobs/metrics.ts` | Success rate, duration |
+| 4.12 | Add manual trigger API | `apps/scrapers/src/routes/jobs.router.ts` | POST /jobs/trigger |
+| 4.13 | Implement job history cleanup | `apps/scrapers/src/court/jobs/cleanup.ts` | Delete old job records |
+| 4.14 | Add distributed locking | `apps/scrapers/src/court/jobs/lock.ts` | Prevent duplicate runs |
+| 4.15 | Write job scheduling tests | `apps/scrapers/test/court/jobs.spec.ts` | Test scheduling logic |
 
 ---
 
-## Action 5: Case Tracking & Monitoring System (Confidence: 82%)
+## Action 5: Case Tracking Dashboard UI (Confidence: 85%)
 
-**Research Date**: 2025-12-28
-**Documentation Validated**: Yes - Cloudflare Workflows
+**Research Date**: 2026-01-05
+**Documentation Validated**: Yes - [nuxt.com/docs](https://nuxt.com/docs), [vuejs.org](https://vuejs.org/)
 
-### Why This Matters
-- Monitors cases for updates
-- Scheduled scraping per case
-- Detects new rulings/filings
-- Core feature for users
+### Why This Enables User Value
+
+Current frontend pages:
+- `/` - Home page
+- `/briefs` - Briefs listing (news, not courts)
+- `/admin` - Admin dashboard
+- **NO court case UI at all**
+
+Users can track cases via API but have NO way to:
+- See their tracked cases in a list
+- View case details and history
+- See recent rulings affecting their cases
+- Manage alerts and notifications
+- Search and add new cases
+
+**Without a UI, the platform is API-only and unusable for lawyers.**
 
 ### Success Criteria
-- [ ] Cases tracked in database
-- [ ] Scheduled checks run automatically
-- [ ] Changes detected and logged
-- [ ] Update history maintained
-- [ ] Workflow handles failures
+- [ ] Dashboard page showing all tracked cases
+- [ ] Case detail page with full history
+- [ ] Add case by case number
+- [ ] Alert management (enable/disable, channels)
+- [ ] Search cases across courts
 
 ### Atomic Subtasks
 
-| # | Task | Files (≤5) | Success Criteria |
-|---|------|------------|------------------|
-| 5.1 | Create tracking service | `apps/scrapers/src/court/tracking/TrackingService.ts` | `trackCase(caseNumber)` works |
-| 5.2 | Define tracking workflow | `apps/scrapers/src/workflows/caseTracking.workflow.ts` | Durable workflow defined |
-| 5.3 | Schedule periodic checks | `apps/scrapers/wrangler.toml` | Cron trigger every 4 hours |
-| 5.4 | Create change detector | `apps/scrapers/src/court/tracking/changeDetector.ts` | Compares snapshots |
-| 5.5 | Store case snapshots | `apps/scrapers/src/court/tracking/snapshot.ts` | Snapshots in R2 |
-| 5.6 | Create update log | `apps/scrapers/src/court/tracking/updateLog.ts` | Changes logged to DB |
-| 5.7 | Handle new rulings | `apps/scrapers/src/court/tracking/handlers.ts` | New ruling triggers alert |
-| 5.8 | Handle new filings | `apps/scrapers/src/court/tracking/handlers.ts` | New filing triggers alert |
-| 5.9 | Handle calendar changes | `apps/scrapers/src/court/tracking/handlers.ts` | Date changes detected |
-| 5.10 | Create tracking API | `apps/scrapers/src/routes/tracking.router.ts` | REST endpoints for tracking |
-| 5.11 | Add tracking metrics | `apps/scrapers/src/court/tracking/metrics.ts` | Track success/failure rates |
-| 5.12 | Handle rate limits | `apps/scrapers/src/court/tracking/TrackingService.ts` | Respects 1 req/min |
-| 5.13 | Create priority queue | `apps/scrapers/src/court/tracking/queue.ts` | High-priority cases first |
-| 5.14 | Add retry logic | `apps/scrapers/src/court/tracking/retry.ts` | Failed checks retried |
-| 5.15 | Create tracking tests | `apps/scrapers/test/court/tracking.spec.ts` | Workflow tests pass |
+| # | Task | Files (≤5) | Description |
+|---|------|------------|-------------|
+| 5.1 | Create dashboard layout | `apps/frontend/src/layouts/dashboard.vue` | Sidebar nav, user menu |
+| 5.2 | Create cases list page | `apps/frontend/src/pages/dashboard/cases/index.vue` | Table of tracked cases |
+| 5.3 | Create case detail page | `apps/frontend/src/pages/dashboard/cases/[id].vue` | Full case information |
+| 5.4 | Add case search component | `apps/frontend/src/components/court/CaseSearch.vue` | Search by number, party |
+| 5.5 | Create add case modal | `apps/frontend/src/components/court/AddCaseModal.vue` | Add case to tracking |
+| 5.6 | Create case card component | `apps/frontend/src/components/court/CaseCard.vue` | Case summary card |
+| 5.7 | Create timeline component | `apps/frontend/src/components/court/CaseTimeline.vue` | Case event timeline |
+| 5.8 | Create rulings list component | `apps/frontend/src/components/court/RulingsList.vue` | Recent rulings |
+| 5.9 | Create alert settings page | `apps/frontend/src/pages/dashboard/alerts.vue` | Manage alert prefs |
+| 5.10 | Add notifications dropdown | `apps/frontend/src/components/NotificationsDropdown.vue` | Recent alerts |
+| 5.11 | Create court selector | `apps/frontend/src/components/court/CourtSelector.vue` | Filter by court |
+| 5.12 | Add real-time updates | `apps/frontend/src/composables/useCourtUpdates.ts` | WebSocket for live updates |
+| 5.13 | Create empty states | `apps/frontend/src/components/EmptyState.vue` | No cases, no results |
+| 5.14 | Add loading skeletons | `apps/frontend/src/components/CaseSkeleton.vue` | Loading placeholders |
+| 5.15 | Write dashboard E2E tests | `apps/frontend/e2e/dashboard.spec.ts` | Test all dashboard flows |
 
 ---
 
-## Action 6: User Case Management (Confidence: 80%)
+## Action 6: LA Superior Court Scraper (Confidence: 80%)
 
-**Research Date**: 2025-12-28
-**Documentation Validated**: Yes
+**Research Date**: 2026-01-05
+**Documentation Validated**: Yes - [lacourt.org](https://www.lacourt.org/)
 
-### Why This Matters
-- Users add their cases to track
-- Personal dashboard of cases
-- Foundation for SaaS model
-- Enables user-specific alerts
+### Why This Is Major Market Expansion
+
+| Metric | SF Superior | LA Superior |
+|--------|-------------|-------------|
+| **Annual Cases** | ~50,000 | ~500,000 |
+| **Attorneys** | ~10,000 | ~100,000 |
+| **Population** | 870,000 | 10,000,000 |
+| **Market Size** | 1x | **10x** |
+
+**LA County is the largest court system in the US. Adding it 10x the addressable market.**
+
+### Technical Considerations
+- Different website (lacourt.org vs sf.courts.ca.gov)
+- Different case number format
+- Different Cloudflare protection level
+- Different page structures
+- Public Portal vs Case Access
 
 ### Success Criteria
-- [ ] Users can add cases by number
-- [ ] Cases validated before adding
-- [ ] Dashboard shows tracked cases
-- [ ] Users can remove cases
-- [ ] Case updates visible per user
+- [ ] Can look up LA cases by case number
+- [ ] Can scrape tentative rulings
+- [ ] Can track LA cases
+- [ ] Handles LA's specific Cloudflare setup
+- [ ] LA cases appear in unified search
 
 ### Atomic Subtasks
 
-| # | Task | Files (≤5) | Success Criteria |
-|---|------|------------|------------------|
-| 6.1 | Create user cases table | `packages/database/src/schema.ts` | $userCases with userId, caseId |
-| 6.2 | Create add case endpoint | `apps/scrapers/src/routes/userCases.router.ts` | POST /cases works |
-| 6.3 | Validate case exists | `apps/scrapers/src/court/validation.ts` | Case verified in court system |
-| 6.4 | Create remove case endpoint | `apps/scrapers/src/routes/userCases.router.ts` | DELETE /cases/:id works |
-| 6.5 | Create list cases endpoint | `apps/scrapers/src/routes/userCases.router.ts` | GET /cases returns user's cases |
-| 6.6 | Create case detail endpoint | `apps/scrapers/src/routes/userCases.router.ts` | GET /cases/:id with full detail |
-| 6.7 | Add case to tracking | `apps/scrapers/src/court/userCases.ts` | Auto-adds to tracking workflow |
-| 6.8 | Create dashboard page | `apps/frontend/src/pages/cases/index.vue` | Lists user's cases |
-| 6.9 | Create case detail page | `apps/frontend/src/pages/cases/[id].vue` | Shows case details |
-| 6.10 | Create add case form | `apps/frontend/src/components/AddCaseForm.vue` | Form validates input |
-| 6.11 | Show case timeline | `apps/frontend/src/components/CaseTimeline.vue` | Events shown chronologically |
-| 6.12 | Add case notes | `packages/database/src/schema.ts` | $caseNotes for user notes |
-| 6.13 | Create notes UI | `apps/frontend/src/components/CaseNotes.vue` | Notes CRUD works |
-| 6.14 | Add case sharing | `apps/scrapers/src/routes/userCases.router.ts` | Share case with other users |
-| 6.15 | Create usage limits | `apps/scrapers/src/court/limits.ts` | Free tier: 5 cases max |
+| # | Task | Files (≤5) | Description |
+|---|------|------------|-------------|
+| 6.1 | Research LA Court website | - | Document structure, selectors, auth |
+| 6.2 | Create LA case number parser | `apps/scrapers/src/court/laCourt/caseNumber.ts` | LA case number format |
+| 6.3 | Create LA URL helpers | `apps/scrapers/src/court/laCourt/urls.ts` | Portal URLs |
+| 6.4 | Create LA selectors | `apps/scrapers/src/court/laCourt/selectors.ts` | CSS selectors for LA pages |
+| 6.5 | Create LACourtScraper | `apps/scrapers/src/court/laCourt/LACourtScraper.ts` | Main scraper class |
+| 6.6 | Implement case lookup | `apps/scrapers/src/court/laCourt/LACourtScraper.ts` | lookupCase method |
+| 6.7 | Implement tentative rulings | `apps/scrapers/src/court/laCourt/tentativeRulings.ts` | LA tentative ruling parser |
+| 6.8 | Add LA to court registry | `apps/scrapers/src/court/CrawlerFactory.ts` | Register LA scraper |
+| 6.9 | Add LA court to database | `packages/database/src/seed/courts.ts` | Seed LA court record |
+| 6.10 | Create LA HTML fixtures | `apps/scrapers/test/fixtures/laCourt/*.html` | Test fixtures |
+| 6.11 | Write LA scraper tests | `apps/scrapers/test/court/laCourt.spec.ts` | Unit tests |
+| 6.12 | Add LA to cron jobs | `apps/scrapers/wrangler.toml` | LA scraping schedule |
+| 6.13 | Update search to include LA | `apps/scrapers/src/court/search/SearchService.ts` | Multi-court search |
+| 6.14 | Add LA court to frontend | `apps/frontend/src/components/court/CourtSelector.vue` | LA option |
+| 6.15 | E2E test LA scraping | `apps/scrapers/test/e2e/laCourt.spec.ts` | Integration test |
 
 ---
 
-## Action 7: Court Document Storage (R2) (Confidence: 90%)
+## Action 7: Webhook Delivery Queue with Retries (Confidence: 85%)
 
-**Research Date**: 2025-12-28
-**Documentation Validated**: Yes - [Cloudflare R2](https://developers.cloudflare.com/r2/)
+**Research Date**: 2026-01-05
+**Documentation Validated**: Yes - [developers.cloudflare.com/queues/](https://developers.cloudflare.com/queues/)
 
-### Why This Matters
-- Store court documents permanently
-- PDF/image storage
-- Versioning for changes
-- Fast retrieval
+### Why This Improves Reliability
+
+Current webhook implementation (`apps/scrapers/src/court/alerts/webhook.ts`):
+- Fire and forget delivery
+- No retry on failure
+- No delivery confirmation
+- No dead letter handling
+
+**For enterprise integrations, reliable delivery is non-negotiable.**
 
 ### Success Criteria
-- [ ] R2 bucket configured
-- [ ] Documents uploaded with metadata
-- [ ] Documents retrievable by case
-- [ ] Versioning works
-- [ ] Cleanup policy enforced
+- [ ] Failed webhooks retry with exponential backoff
+- [ ] Max 5 retries over 24 hours
+- [ ] Dead letter queue for permanent failures
+- [ ] Delivery status tracking
+- [ ] Webhook signature verification
 
 ### Atomic Subtasks
 
-| # | Task | Files (≤5) | Success Criteria |
-|---|------|------------|------------------|
-| 7.1 | Configure R2 bucket | `apps/scrapers/wrangler.toml` | COURT_DOCS bucket bound |
-| 7.2 | Create document storage class | `apps/scrapers/src/court/storage/DocumentStorage.ts` | Upload/download works |
-| 7.3 | Generate storage keys | `apps/scrapers/src/court/storage/keys.ts` | Consistent key format |
-| 7.4 | Store document metadata | `apps/scrapers/src/court/storage/metadata.ts` | Metadata in custom headers |
-| 7.5 | Create document download | `apps/scrapers/src/court/storage/DocumentStorage.ts` | `getDocument(id)` works |
-| 7.6 | Add versioning | `apps/scrapers/src/court/storage/versioning.ts` | Multiple versions stored |
-| 7.7 | Create document listing | `apps/scrapers/src/court/storage/DocumentStorage.ts` | `listDocuments(caseId)` works |
-| 7.8 | Add OCR integration | `apps/scrapers/src/court/storage/ocr.ts` | PDF text extracted |
-| 7.9 | Create presigned URLs | `apps/scrapers/src/court/storage/presign.ts` | Secure download links |
-| 7.10 | Add document API | `apps/scrapers/src/routes/documents.router.ts` | REST endpoints work |
-| 7.11 | Create viewer component | `apps/frontend/src/components/DocumentViewer.vue` | PDF viewer works |
-| 7.12 | Add lifecycle rules | `apps/scrapers/src/court/storage/lifecycle.ts` | Old versions cleaned up |
-| 7.13 | Track storage usage | `apps/scrapers/src/court/storage/usage.ts` | Usage per user tracked |
-| 7.14 | Create storage tests | `apps/scrapers/test/court/storage.spec.ts` | Upload/download tests pass |
-| 7.15 | Add compression | `apps/scrapers/src/court/storage/compression.ts` | Large docs compressed |
+| # | Task | Files (≤5) | Description |
+|---|------|------------|-------------|
+| 7.1 | Create Cloudflare Queue | `apps/scrapers/wrangler.toml` | WEBHOOK_QUEUE binding |
+| 7.2 | Create queue producer | `apps/scrapers/src/court/alerts/webhookQueue.ts` | Queue webhook messages |
+| 7.3 | Create queue consumer | `apps/scrapers/src/queues/webhookConsumer.ts` | Process queued webhooks |
+| 7.4 | Implement retry logic | `apps/scrapers/src/queues/retry.ts` | Exponential backoff |
+| 7.5 | Add delivery tracking table | `packages/database/src/schema.ts` | $webhookDeliveries |
+| 7.6 | Implement webhook signatures | `apps/scrapers/src/court/alerts/webhookSignature.ts` | HMAC signing |
+| 7.7 | Create dead letter handler | `apps/scrapers/src/queues/deadLetter.ts` | Handle permanent failures |
+| 7.8 | Add delivery status API | `apps/scrapers/src/routes/webhooks.router.ts` | GET /webhooks/:id/deliveries |
+| 7.9 | Add webhook test endpoint | `apps/scrapers/src/routes/webhooks.router.ts` | POST /webhooks/test |
+| 7.10 | Create webhook dashboard | `apps/frontend/src/pages/dashboard/webhooks.vue` | View webhook status |
+| 7.11 | Add webhook retry button | `apps/frontend/src/components/WebhookRetryButton.vue` | Manual retry |
+| 7.12 | Implement rate limiting | `apps/scrapers/src/queues/rateLimit.ts` | Per-endpoint limits |
+| 7.13 | Add webhook metrics | `apps/scrapers/src/queues/metrics.ts` | Success rate, latency |
+| 7.14 | Write queue tests | `apps/scrapers/test/queues/webhook.spec.ts` | Test retry logic |
+| 7.15 | Document webhook integration | `docs/webhooks.md` | Integration guide |
 
 ---
 
-## Action 8: Case Update Alert System (Confidence: 78%)
+## Action 8: Usage Metrics Dashboard (Confidence: 82%)
 
-**Research Date**: 2025-12-28
-**Documentation Validated**: Yes - Existing alerts infrastructure
+**Research Date**: 2026-01-05
+**Documentation Validated**: Yes - [developers.cloudflare.com/analytics/](https://developers.cloudflare.com/analytics/)
 
-### Why This Matters
-- Real-time notifications for case changes
-- Email, push, webhook support
-- Critical for legal professionals
-- Differentiator from competitors
+### Why This Enables Business Intelligence
+
+Current state: No visibility into:
+- API usage patterns
+- Scraper success rates
+- Feature adoption
+- Cost drivers
+- User engagement
+
+**You can't improve what you can't measure.**
 
 ### Success Criteria
-- [ ] Alerts triggered on case changes
-- [ ] Email notifications sent
-- [ ] Push notifications work
-- [ ] Webhook delivery works
-- [ ] Alert preferences configurable
+- [ ] Real-time API usage metrics
+- [ ] Scraper health dashboard
+- [ ] User engagement metrics
+- [ ] Cost tracking per operation
+- [ ] Exportable reports
 
 ### Atomic Subtasks
 
-| # | Task | Files (≤5) | Success Criteria |
-|---|------|------------|------------------|
-| 8.1 | Create court alert types | `apps/scrapers/src/court/alerts/types.ts` | Alert types defined |
-| 8.2 | Create alert service | `apps/scrapers/src/court/alerts/AlertService.ts` | `sendAlert(caseId, type)` works |
-| 8.3 | Integrate with tracking | `apps/scrapers/src/court/tracking/handlers.ts` | Changes trigger alerts |
-| 8.4 | Create email templates | `apps/scrapers/src/court/alerts/templates/` | Ruling, filing, hearing templates |
-| 8.5 | Send email alerts | `apps/scrapers/src/court/alerts/email.ts` | Emails delivered |
-| 8.6 | Send push alerts | `apps/scrapers/src/court/alerts/push.ts` | Push notifications work |
-| 8.7 | Send webhook alerts | `apps/scrapers/src/court/alerts/webhook.ts` | Webhooks delivered |
-| 8.8 | Create alert preferences | `packages/database/src/schema.ts` | $alertPreferences table |
-| 8.9 | Create preferences API | `apps/scrapers/src/routes/alerts.router.ts` | CRUD for preferences |
-| 8.10 | Create preferences UI | `apps/frontend/src/pages/settings/alerts.vue` | Preferences configurable |
-| 8.11 | Add alert history | `packages/database/src/schema.ts` | $alertHistory table |
-| 8.12 | Create history API | `apps/scrapers/src/routes/alerts.router.ts` | GET /alerts/history works |
-| 8.13 | Add quiet hours | `apps/scrapers/src/court/alerts/quietHours.ts` | No alerts during quiet hours |
-| 8.14 | Create alert batching | `apps/scrapers/src/court/alerts/batching.ts` | Batch multiple alerts |
-| 8.15 | Add alert tests | `apps/scrapers/test/court/alerts.spec.ts` | Alert flow tests pass |
+| # | Task | Files (≤5) | Description |
+|---|------|------------|-------------|
+| 8.1 | Design metrics schema | `packages/database/src/schema.ts` | $usageMetrics, $scraperMetrics |
+| 8.2 | Create metrics collector | `apps/scrapers/src/lib/metrics.ts` | Record usage events |
+| 8.3 | Add API usage middleware | `apps/scrapers/src/middleware/metrics.ts` | Track all API calls |
+| 8.4 | Add scraper metrics | `apps/scrapers/src/court/BaseCrawler.ts` | Track scrape success/failure |
+| 8.5 | Create metrics API | `apps/scrapers/src/routes/metrics.router.ts` | GET /metrics endpoints |
+| 8.6 | Create admin metrics page | `apps/frontend/src/pages/admin/metrics.vue` | Metrics dashboard |
+| 8.7 | Add API usage charts | `apps/frontend/src/components/charts/ApiUsage.vue` | Usage over time |
+| 8.8 | Add scraper health charts | `apps/frontend/src/components/charts/ScraperHealth.vue` | Success rates |
+| 8.9 | Create cost calculator | `apps/scrapers/src/lib/costCalculator.ts` | Estimate costs |
+| 8.10 | Add cost dashboard | `apps/frontend/src/pages/admin/costs.vue` | Cost breakdown |
+| 8.11 | Create usage alerts | `apps/scrapers/src/lib/usageAlerts.ts` | Alert on anomalies |
+| 8.12 | Add export functionality | `apps/scrapers/src/routes/metrics.router.ts` | CSV/JSON export |
+| 8.13 | Create daily digest | `apps/scrapers/src/workflows/metricsDigest.workflow.ts` | Email summary |
+| 8.14 | Add Cloudflare Analytics | `apps/scrapers/wrangler.toml` | CF Analytics integration |
+| 8.15 | Write metrics tests | `apps/scrapers/test/lib/metrics.spec.ts` | Test collection |
 
 ---
 
-## Action 9: Court Data Search Infrastructure (Confidence: 85%)
+## Action 9: Stripe Billing Integration (Confidence: 78%)
 
-**Research Date**: 2025-12-28
-**Documentation Validated**: Yes - PostgreSQL FTS
+**Research Date**: 2026-01-05
+**Documentation Validated**: Yes - [stripe.com/docs](https://stripe.com/docs)
 
-### Why This Matters
-- Search across all court data
-- Party name search
-- Case number search
-- Ruling text search
+### Why This Enables Revenue
+
+Current state:
+- API tiers defined in `$courtApiKeys.tier`: `'free'`, `'pro'`, `'enterprise'`
+- No way to upgrade
+- No payment processing
+- No subscription management
+- **$0 revenue capability**
 
 ### Success Criteria
-- [ ] Full-text search on rulings
-- [ ] Party name search works
-- [ ] Case number autocomplete
-- [ ] Search results ranked
-- [ ] Search UI functional
+- [ ] Users can upgrade to paid plans
+- [ ] Usage-based metering for API calls
+- [ ] Subscription management portal
+- [ ] Invoice generation
+- [ ] Free trial with upgrade prompts
 
 ### Atomic Subtasks
 
-| # | Task | Files (≤5) | Success Criteria |
-|---|------|------------|------------------|
-| 9.1 | Add tsvector to rulings | `packages/database/src/schema.ts` | searchVector column |
-| 9.2 | Add tsvector to parties | `packages/database/src/schema.ts` | searchVector column |
-| 9.3 | Create GIN indexes | `packages/database/migrations/` | Indexes created |
-| 9.4 | Create search service | `apps/scrapers/src/court/search/SearchService.ts` | Multi-entity search |
-| 9.5 | Create ruling search | `apps/scrapers/src/court/search/rulingSearch.ts` | `searchRulings(query)` works |
-| 9.6 | Create party search | `apps/scrapers/src/court/search/partySearch.ts` | `searchParties(query)` works |
-| 9.7 | Create case search | `apps/scrapers/src/court/search/caseSearch.ts` | `searchCases(query)` works |
-| 9.8 | Add search ranking | `apps/scrapers/src/court/search/ranking.ts` | Relevance scoring |
-| 9.9 | Create search API | `apps/scrapers/src/routes/search.router.ts` | GET /search works |
-| 9.10 | Create search UI | `apps/frontend/src/pages/search.vue` | Search page works |
-| 9.11 | Add autocomplete | `apps/frontend/src/components/SearchAutocomplete.vue` | Suggestions shown |
-| 9.12 | Add faceted search | `apps/scrapers/src/court/search/facets.ts` | Filter by court, date, type |
-| 9.13 | Create search filters | `apps/frontend/src/components/SearchFilters.vue` | Filters work |
-| 9.14 | Add search analytics | `apps/scrapers/src/court/search/analytics.ts` | Popular searches tracked |
-| 9.15 | Create search tests | `apps/scrapers/test/court/search.spec.ts` | Search tests pass |
+| # | Task | Files (≤5) | Description |
+|---|------|------------|-------------|
+| 9.1 | Create Stripe account | - | Set up Stripe account, get keys |
+| 9.2 | Install Stripe SDK | `apps/scrapers/package.json`, `apps/frontend/package.json` | stripe, @stripe/stripe-js |
+| 9.3 | Configure Stripe environment | `apps/scrapers/.dev.vars`, `apps/frontend/.env` | STRIPE_SECRET_KEY |
+| 9.4 | Create billing tables | `packages/database/src/schema.ts` | $subscriptions, $invoices |
+| 9.5 | Create pricing page | `apps/frontend/src/pages/pricing.vue` | Display plans |
+| 9.6 | Implement checkout flow | `apps/scrapers/src/routes/billing.router.ts` | Create checkout session |
+| 9.7 | Create Stripe webhook handler | `apps/scrapers/src/routes/stripeWebhooks.router.ts` | Handle Stripe events |
+| 9.8 | Implement subscription sync | `apps/scrapers/src/lib/billing/subscriptionSync.ts` | Sync subscription status |
+| 9.9 | Add usage metering | `apps/scrapers/src/lib/billing/usageMetering.ts` | Report API usage to Stripe |
+| 9.10 | Create billing portal link | `apps/scrapers/src/routes/billing.router.ts` | Customer portal redirect |
+| 9.11 | Add billing page | `apps/frontend/src/pages/dashboard/billing.vue` | Subscription management |
+| 9.12 | Implement trial periods | `apps/scrapers/src/lib/billing/trials.ts` | 14-day free trial |
+| 9.13 | Add upgrade prompts | `apps/frontend/src/components/UpgradePrompt.vue` | In-app upgrade nudges |
+| 9.14 | Create invoice history | `apps/frontend/src/pages/dashboard/invoices.vue` | View past invoices |
+| 9.15 | Write billing tests | `apps/scrapers/test/billing/*.spec.ts` | Test subscription flows |
 
 ---
 
-## Action 10: Public Court Data API (Confidence: 75%)
+## Action 10: Data Quality Pipeline (Confidence: 80%)
 
-**Research Date**: 2025-12-28
-**Documentation Validated**: Yes - Existing OpenAPI infrastructure
+**Research Date**: 2026-01-05
+**Documentation Validated**: Yes - [zod.dev](https://zod.dev/), Best practices
 
-### Why This Matters
-- Enables third-party integrations
-- Foundation for B2B revenue
-- API-first architecture
-- Competitor to UniCourt API
+### Why This Ensures Data Integrity
+
+Scraped data can have issues:
+- Invalid dates from parsing errors (fixed one bug already!)
+- Duplicate cases from re-scraping
+- Missing fields from page changes
+- Inconsistent formats across courts
+
+**Garbage in, garbage out. Data quality is trust.**
 
 ### Success Criteria
-- [ ] REST API for court data
-- [ ] API key authentication
-- [ ] Rate limiting per tier
-- [ ] OpenAPI documentation
-- [ ] SDK/client libraries
+- [ ] All scraped data validated with Zod schemas
+- [ ] Duplicate cases detected and merged
+- [ ] Data quality scores per record
+- [ ] Anomaly detection for unusual patterns
+- [ ] Data freshness monitoring
 
 ### Atomic Subtasks
 
-| # | Task | Files (≤5) | Success Criteria |
-|---|------|------------|------------------|
-| 10.1 | Create court API router | `apps/scrapers/src/routes/courtApi.router.ts` | Base router configured |
-| 10.2 | Add case lookup endpoint | `apps/scrapers/src/routes/courtApi.router.ts` | GET /api/cases/:id works |
-| 10.3 | Add case search endpoint | `apps/scrapers/src/routes/courtApi.router.ts` | GET /api/cases/search works |
-| 10.4 | Add rulings endpoint | `apps/scrapers/src/routes/courtApi.router.ts` | GET /api/rulings works |
-| 10.5 | Add parties endpoint | `apps/scrapers/src/routes/courtApi.router.ts` | GET /api/parties works |
-| 10.6 | Add documents endpoint | `apps/scrapers/src/routes/courtApi.router.ts` | GET /api/documents works |
-| 10.7 | Create API key system | `apps/scrapers/src/court/api/apiKeys.ts` | Keys generated/validated |
-| 10.8 | Add API key table | `packages/database/src/schema.ts` | $apiKeys table |
-| 10.9 | Create key management UI | `apps/frontend/src/pages/settings/api-keys.vue` | Keys manageable |
-| 10.10 | Add rate limiting | `apps/scrapers/src/court/api/rateLimit.ts` | Per-key limits |
-| 10.11 | Create usage tracking | `apps/scrapers/src/court/api/usage.ts` | Usage per key tracked |
-| 10.12 | Update OpenAPI spec | `apps/scrapers/src/lib/openapi.ts` | Court endpoints documented |
-| 10.13 | Create JS SDK | `packages/court-sdk/src/index.ts` | TypeScript SDK works |
-| 10.14 | Add SDK to npm | `packages/court-sdk/package.json` | Ready to publish |
-| 10.15 | Create API tests | `apps/scrapers/test/court/api.spec.ts` | API tests pass |
-| 10.16 | Add webhook for updates | `apps/scrapers/src/court/api/webhooks.ts` | Webhook subscriptions work |
+| # | Task | Files (≤5) | Description |
+|---|------|------------|-------------|
+| 10.1 | Create validation schemas | `apps/scrapers/src/court/validation/schemas.ts` | Zod schemas for all types |
+| 10.2 | Add validation to scrapers | `apps/scrapers/src/court/BaseCrawler.ts` | Validate before storing |
+| 10.3 | Create deduplication service | `apps/scrapers/src/court/quality/deduplication.ts` | Find and merge duplicates |
+| 10.4 | Add quality score calculation | `apps/scrapers/src/court/quality/scoring.ts` | Score data completeness |
+| 10.5 | Create anomaly detector | `apps/scrapers/src/court/quality/anomalies.ts` | Flag unusual data |
+| 10.6 | Add freshness tracking | `apps/scrapers/src/court/quality/freshness.ts` | Track data age |
+| 10.7 | Create quality dashboard | `apps/frontend/src/pages/admin/quality.vue` | View data quality |
+| 10.8 | Add quality alerts | `apps/scrapers/src/court/quality/alerts.ts` | Alert on quality drops |
+| 10.9 | Create data repair tools | `apps/scrapers/src/court/quality/repair.ts` | Fix common issues |
+| 10.10 | Add quality API | `apps/scrapers/src/routes/quality.router.ts` | Quality endpoints |
+| 10.11 | Create quality reports | `apps/scrapers/src/court/quality/reports.ts` | Weekly quality reports |
+| 10.12 | Add duplicate merge UI | `apps/frontend/src/pages/admin/duplicates.vue` | Manual duplicate resolution |
+| 10.13 | Implement data lineage | `apps/scrapers/src/court/quality/lineage.ts` | Track data source |
+| 10.14 | Add validation tests | `apps/scrapers/test/court/validation.spec.ts` | Test validation |
+| 10.15 | Document data standards | `docs/data-quality.md` | Data quality guidelines |
+
+---
+
+## Implementation Priority Order
+
+```
+Week 1: Foundation (P0) - MUST HAVE
+├── Action 1: User Authentication (Clerk) [3 days]
+├── Action 2: Error Tracking (Sentry) [1 day]
+└── Action 3: Integration Tests [3 days, ongoing]
+
+Week 2-3: Core Value (P1) - SHOULD HAVE
+├── Action 4: Scheduled Scraping [2 days]
+├── Action 5: Dashboard UI [4 days]
+└── Action 6: LA Court Scraper [5 days]
+
+Week 4-5: Scale & Monetize (P2) - NICE TO HAVE
+├── Action 7: Webhook Queue [2 days]
+├── Action 8: Metrics Dashboard [2 days]
+├── Action 9: Stripe Billing [4 days]
+└── Action 10: Data Quality [3 days]
+```
+
+---
+
+## Success Metrics (90-Day Targets)
+
+| Metric | Current | Target |
+|--------|---------|--------|
+| **Registered Users** | 0 | 100 |
+| **Tracked Cases** | 0 | 1,000 |
+| **Courts Supported** | 1 | 3 |
+| **Test Coverage (court/*)** | ~0% | 80% |
+| **Error Rate** | Unknown | <1% |
+| **Data Freshness** | Manual | <6 hours |
+| **MRR** | $0 | $1,000 |
+
+---
+
+## Risk Assessment
+
+| Risk | Probability | Impact | Mitigation |
+|------|-------------|--------|------------|
+| Cloudflare blocks scrapers | Medium | High | Multiple browser options, IP rotation, Camoufox |
+| Court website changes | High | Medium | HTML fixtures for tests, quick update cycle |
+| Sentry costs escalate | Low | Low | Sample rate tuning, error budgets |
+| Stripe integration complexity | Medium | Medium | Start with simple plans, iterate |
+| User adoption is slow | Medium | High | Free tier, marketing, SEO, partnerships |
+| LA Court has different tech | Medium | Medium | Research thoroughly before building |
 
 ---
 
@@ -493,29 +608,41 @@ Build a comprehensive court data platform that:
 ### Legal Professional Perspective
 - **Wants**: Real-time case alerts, tentative rulings before 3pm, document access
 - **Pain Points**: Manual court website checking, missing deadlines, Cloudflare blocks
-- **Priorities**: Action 2 (Scraper), Action 4 (Rulings), Action 8 (Alerts)
+- **Priorities**: Authentication → Dashboard → Alerts → LA Court support
 
 ### Developer/Integrator Perspective
-- **Wants**: Clean API, SDKs, webhook integrations
+- **Wants**: Clean API, SDKs, webhook integrations, documentation
 - **Pain Points**: No court APIs exist, data is locked in websites
-- **Priorities**: Action 10 (Public API), Action 9 (Search)
+- **Priorities**: Error tracking → Tests → Webhook reliability → Metrics
 
 ### Operations Perspective
-- **Wants**: Reliable scraping, monitoring, scaling
-- **Pain Points**: Cloudflare blocks, rate limiting, data freshness
-- **Priorities**: Action 1 (Crawlee), Action 5 (Tracking), Action 7 (Storage)
+- **Wants**: Reliable scraping, monitoring, scaling, cost control
+- **Pain Points**: Cloudflare blocks, rate limiting, data freshness, debugging
+- **Priorities**: Sentry → Scheduled jobs → Metrics → Data quality
 
 ---
 
-## Sources (Verified December 28, 2025)
+## Technology Research Notes (January 2026)
 
-- [Crawlee 3.15.3](https://www.npmjs.com/package/crawlee) - Web scraping framework
-- [Camoufox-js](https://www.npmjs.com/package/camoufox-js) - Stealth Firefox for Cloudflare bypass
-- [Apify Client](https://docs.apify.com/api/client/js) - Apify API integration
-- [SF Courts Online Services](https://sf.courts.ca.gov/online-services) - Target website
-- [SF Court Tentative Rulings](https://sf.courts.ca.gov/online-services/tentative-rulings) - Rulings page
-- [SF Court Case Information](https://sf.courts.ca.gov/online-services/case-information) - Case lookup
-- [Cloudflare Bypass Guide](https://blog.apify.com/bypass-cloudflare/) - Bypass techniques
-- [Drizzle ORM](https://orm.drizzle.team/) - Database ORM
-- [Cloudflare R2](https://developers.cloudflare.com/r2/) - Object storage
-- [PlaywrightCrawler API](https://crawlee.dev/js/api/next/playwright-crawler/class/PlaywrightCrawler) - Crawler docs
+### Clerk Authentication
+- Clerk v6.x has native Cloudflare Workers support
+- `@clerk/nuxt` officially supported for Nuxt 3
+- Pricing: Free up to 10K MAUs, then $0.02/MAU
+- Alternative considered: Auth0 (more complex Workers setup)
+
+### Sentry Error Tracking
+- `@sentry/cloudflare` v8.x has first-class Workers support
+- Source maps work with Wrangler deploy
+- Pricing: Free up to 5K errors/month, then $26/month for 50K
+- Alternative considered: LogRocket (more expensive, less CF support)
+
+### LA Court Technical Research
+- Website: lacourt.org (different from sf.courts.ca.gov)
+- Has case search portal requiring registration
+- Different case number format than SF
+- May have stronger Cloudflare protection
+- Research needed before implementation
+
+---
+
+*This document should be updated after each major milestone completion.*
