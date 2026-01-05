@@ -89,6 +89,10 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
+      - name: Set Sentry Release Version
+        id: sentry_release
+        run: echo "version=meridian@${{ github.sha }}" >> $GITHUB_OUTPUT
+
       - name: Build & Deploy Worker
         uses: cloudflare/wrangler-action@v3
         with:
@@ -106,6 +110,7 @@ jobs:
             ANTHROPIC_API_KEY
             MISTRAL_API_KEY
             FIRECRAWL_API_KEY
+            SENTRY_DSN
         env:
           GOOGLE_BASE_URL: ${{ secrets.GOOGLE_BASE_URL }}
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
@@ -115,6 +120,22 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
           FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }}
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+          SENTRY_RELEASE: ${{ steps.sentry_release.outputs.version }}
+          ENVIRONMENT: production
+
+      - name: Create Sentry Release
+        if: ${{ secrets.SENTRY_AUTH_TOKEN != '' }}
+        uses: getsentry/action-release@v1
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: meridian-scrapers
+        with:
+          environment: production
+          version: ${{ steps.sentry_release.outputs.version }}
+          sourcemaps: ./apps/scrapers/dist
+        continue-on-error: true
 
       - name: Smoke Test - Ping API
         run: |
@@ -126,6 +147,22 @@ jobs:
         run: pnpm build --filter=@meridian/frontend
         env:
           NUXT_DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          NUXT_PUBLIC_SENTRY_DSN: ${{ secrets.SENTRY_DSN_FRONTEND }}
+          NUXT_PUBLIC_SENTRY_RELEASE: ${{ steps.sentry_release.outputs.version }}
+          NUXT_PUBLIC_ENVIRONMENT: production
+
+      - name: Create Sentry Release for Frontend
+        if: ${{ secrets.SENTRY_AUTH_TOKEN != '' }}
+        uses: getsentry/action-release@v1
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: meridian-frontend
+        with:
+          environment: production
+          version: ${{ steps.sentry_release.outputs.version }}
+          sourcemaps: ./apps/frontend/.output/public/_nuxt
+        continue-on-error: true
 
       - name: Publish to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3

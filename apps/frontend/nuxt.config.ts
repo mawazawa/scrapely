@@ -51,6 +51,10 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       WORKER_API: 'http://localhost:8787',
+      // Sentry configuration
+      sentryDsn: '',
+      sentryRelease: '',
+      environment: 'development',
     },
     DATABASE_URL: '',
   },

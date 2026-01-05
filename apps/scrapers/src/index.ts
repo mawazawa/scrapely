@@ -1,4 +1,5 @@
 import app from './app';
+import { initSentry, captureException, addBreadcrumb } from './lib/sentry';
 
 export type Env = {
   // Bindings
@@ -35,25 +36,70 @@ export type Env = {
   RESEND_API_KEY?: string;
 
   MERIDIAN_SECRET_KEY: string;
+
+  // Sentry Error Tracking
+  SENTRY_DSN?: string;
+  SENTRY_RELEASE?: string;
+  ENVIRONMENT?: string;
 };
 
 export default {
-  fetch: app.fetch,
-  async scheduled({ cron }: ScheduledController, env: Env, ctx: ExecutionContext) {
-    // - Every hour (at minute 4): trigger scrapping of RSS feeds
-    if (cron === '4 * * * *') {
-      await env.SCRAPE_RSS_FEED.create({ id: crypto.randomUUID() });
-      console.log('Starting RSS feed scraping...');
-      return;
-    }
+  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
+    // Initialize Sentry for this request
+    initSentry(env, ctx);
 
-    // - Daily at 08:00 UTC: send newsletter
-    if (cron === '0 8 * * *') {
-      if (env.SEND_NEWSLETTER) {
-        await env.SEND_NEWSLETTER.create({ id: crypto.randomUUID() });
-        console.log('Starting newsletter delivery...');
+    try {
+      return await app.fetch(request, env, ctx);
+    } catch (error) {
+      // Capture unhandled errors in Sentry
+      captureException(error, {
+        tags: {
+          handler: 'fetch',
+          url: new URL(request.url).pathname,
+        },
+        extra: {
+          method: request.method,
+          url: request.url,
+        },
+      });
+      throw error;
+    }
+  },
+
+  async scheduled({ cron }: ScheduledController, env: Env, ctx: ExecutionContext) {
+    // Initialize Sentry for this scheduled event
+    initSentry(env, ctx);
+
+    addBreadcrumb({
+      category: 'cron',
+      message: `Scheduled job triggered: ${cron}`,
+      level: 'info',
+    });
+
+    try {
+      // - Every hour (at minute 4): trigger scrapping of RSS feeds
+      if (cron === '4 * * * *') {
+        await env.SCRAPE_RSS_FEED.create({ id: crypto.randomUUID() });
+        console.log('Starting RSS feed scraping...');
+        return;
       }
-      return;
+
+      // - Daily at 08:00 UTC: send newsletter
+      if (cron === '0 8 * * *') {
+        if (env.SEND_NEWSLETTER) {
+          await env.SEND_NEWSLETTER.create({ id: crypto.randomUUID() });
+          console.log('Starting newsletter delivery...');
+        }
+        return;
+      }
+    } catch (error) {
+      captureException(error, {
+        tags: {
+          handler: 'scheduled',
+          cron,
+        },
+      });
+      throw error;
     }
   },
 } satisfies ExportedHandler<Env>;

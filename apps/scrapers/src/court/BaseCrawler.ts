@@ -5,6 +5,7 @@
 
 import type { Browser, BrowserContext, Page } from 'playwright';
 import { logger } from '../lib/logger';
+import { captureScraperError, addBreadcrumb } from '../lib/sentry';
 import { launchCamoufox, createStealthContext, createStealthPage, closeBrowser, humanDelay, saveSession, loadSession } from './camoufox';
 import { navigateWithCloudflareBypass, handleCloudflareChallenge } from './cloudflare';
 import { CourtScraperError, CourtScraperErrorCode, wrapError, isRetryableError } from './errors';
@@ -149,6 +150,13 @@ export abstract class BaseCrawler {
         this.metrics.cloudflareFailures++;
       }
 
+      // Report to Sentry with scraper context
+      captureScraperError(error, {
+        courtId: this.courtId,
+        operation: 'navigate',
+        url,
+      });
+
       throw error;
     }
   }
@@ -162,6 +170,14 @@ export abstract class BaseCrawler {
   ): Promise<ScrapeResult<T>> {
     const startTime = Date.now();
     let lastError: Error | undefined;
+
+    // Add breadcrumb for the operation
+    addBreadcrumb({
+      category: 'scraper',
+      message: `Starting operation: ${operationName}`,
+      level: 'info',
+      data: { courtId: this.courtId },
+    });
 
     for (let attempt = 1; attempt <= this.config.retryCount; attempt++) {
       try {
@@ -202,6 +218,17 @@ export abstract class BaseCrawler {
           await this.reinitialize();
         }
       }
+    }
+
+    // Report final failure to Sentry after all retries exhausted
+    if (lastError) {
+      captureScraperError(lastError, {
+        courtId: this.courtId,
+        operation: operationName,
+        url: this.page?.url(),
+        attempt: this.config.retryCount,
+        maxAttempts: this.config.retryCount,
+      });
     }
 
     return {
