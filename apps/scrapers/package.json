@@ -19,7 +19,7 @@
     "@cloudflare/workers-types": "^4.20250327.0",
     "typescript": "^5.8.2",
     "vitest": "~3.0.9",
-    "wrangler": "^4.1.0"
+    "wrangler": "^4.59.1"
   },
   "dependencies": {
     "@ai-sdk/google": "^1.2.3",
@@ -27,9 +27,9 @@
     "@hono/zod-validator": "^0.4.3",
     "@meridian/database": "workspace:*",
     "@mozilla/readability": "^0.6.0",
-    "ai": "^4.2.6",
-    "fast-xml-parser": "^5.0.9",
-    "hono": "^4.7.4",
+    "ai": "^5.0.52",
+    "fast-xml-parser": "^5.5.7",
+    "hono": "^4.12.12",
     "linkedom": "^0.18.9",
     "neverthrow": "^8.2.0",
     "workers-og": "^0.0.25",
